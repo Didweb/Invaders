@@ -25,108 +25,11 @@
 import pygame, sys
 from pygame.locals import *
 
+from characters.nave import (Nave,Laser)
+
+
 ANCHO = 600
 ALTO = 450
-LINEA_INF = 420
-LIMIT_ALTO = 25
-VELOCIDAD = 5
-
-class Nave(pygame.sprite.Sprite):
-	def __init__(self):
-
-		pygame.sprite.Sprite.__init__(self)
-		self.image = pygame.image.load('nave_1.png').convert_alpha()
-		self.rect = self.image.get_rect()
-		self.rect.center = (ANCHO/2,LINEA_INF)
-		self.speed = VELOCIDAD
-
-	def update(self):
-		key = pygame.key.get_pressed()
-		valores = self.rect
-		upx = valores[0]+25
-		upy = valores[1]+25
-
-
-		if key[K_LEFT] and key[K_UP]:
-
-
-			upx = upx-self.acelerador(key)
-			upy = upy-self.acelerador(key)
-
-		elif key[K_RIGHT] and key[K_UP]:
-			upx = upx+self.acelerador(key)
-			upy = upy-self.acelerador(key)
-
-
-		elif key[K_RIGHT] and key[K_DOWN]:
-			upx = upx+self.acelerador(key)
-			upy = upy+self.acelerador(key)
-
-
-		elif key[K_LEFT] and key[K_DOWN]:
-			upx = upx-self.acelerador(key)
-			upy = upy+self.acelerador(key)
-
-
-
-		elif key[K_LEFT]:
-			upx = upx-self.acelerador(key)
-
-
-
-
-
-
-
-		elif key[K_RIGHT]:
-			upx = upx+self.acelerador(key)
-
-
-
-
-		elif key[K_UP]:
-			upy -= self.acelerador(key)*2
-			upx = upx
-
-
-
-		elif key[K_DOWN]:
-			upy = upy+self.acelerador(key)*2
-			upx = upx
-
-
-		else:
-
-			return False
-
-
-
-
-		if upx>=ANCHO-25:
-			upx = ANCHO-25
-
-		if upy<=LIMIT_ALTO:
-			upy = LIMIT_ALTO
-
-		if upy>LINEA_INF:
-			upy = LINEA_INF
-			print(upy,'<',LINEA_INF-25)
-
-		if upx<25:
-			upx = 25
-
-		self.rect.center = (upx, upy)
-
-
-
-	def acelerador(self,key):
-
-		aceleron = self.speed
-		if key[K_a]:
-				aceleron = VELOCIDAD*3
-
-		return aceleron
-
 
 
 
@@ -144,7 +47,18 @@ def main():
 
 	clock = pygame.time.Clock()
 
+	disparoActivo = False
+	disparoActivo2 = False
+	disparoActivo3 = False
+	disparoActivo4 = False
+	disparoActivo5 = False
+	pasodisparo1 = False
+	pasodisparo2 = False
+	pasodisparo3 = False
+	pasodisparo4 = False
 	jugar = True
+	disparos = {}
+	nDisparos = 0
 	while jugar:
 
 
@@ -155,16 +69,97 @@ def main():
 				pygame.quit()
 				sys.exit()
 
+			key = pygame.key.get_pressed()
+
+			if key[K_x]:
+				if disparoActivo == False:
+					disparoActivo = True
+					nDisparos += 1
+					las = Laser(tanque.rect.x,tanque.rect.y)
+					las.update()
 
 
+				if disparoActivo2 == False and pasodisparo1 == True:
+					disparoActivo2 = True
+					nDisparos += 1
+					las2 = Laser(tanque.rect.x,tanque.rect.y)
+					las2.update()
 
+				if disparoActivo3 == False and pasodisparo2 == True:
+					disparoActivo3 = True
+					nDisparos += 1
+					las3 = Laser(tanque.rect.x,tanque.rect.y)
+					las3.update()
 
+				if disparoActivo4 == False and pasodisparo3 == True:
+					disparoActivo4 = True
+					nDisparos += 1
+					las4 = Laser(tanque.rect.x,tanque.rect.y)
+					las4.update()
+
+				if disparoActivo5 == False and pasodisparo4 == True:
+					disparoActivo5 = True
+					nDisparos += 1
+					las5 = Laser(tanque.rect.x,tanque.rect.y)
+					las5.update()
 
 		screen.fill(colorBG)
 		screen.blit(tanque.image, tanque.rect)
+
+
+		if disparoActivo:
+			las.update()
+			screen.blit(las.image, las.rect)
+			print ('Laser 1: ',las.laser_y)
+			pasodisparo1 = True
+			if las.laser_y <= 0:
+				disparoActivo = False
+				pasodisparo1 = False
+				las.kill()
+
+		if disparoActivo2:
+			las2.update()
+			screen.blit(las2.image, las2.rect)
+			print ('Laser 2: ',las2.laser_y)
+			pasodisparo2 = True
+			if las2.laser_y <= 0:
+				disparoActivo2 = False
+				pasodisparo2 = False
+				las2.kill()
+
+		if disparoActivo3:
+			las3.update()
+			screen.blit(las3.image, las3.rect)
+			print ('Laser 3: ',las3.laser_y)
+			pasodisparo3 = True
+			if las3.laser_y <= 0:
+				disparoActivo3 = False
+				pasodisparo3 = False
+				las3.kill()
+
+		if disparoActivo4:
+			las4.update()
+			screen.blit(las4.image, las4.rect)
+			print ('Laser 4: ',las4.laser_y)
+			pasodisparo4 = True
+			if las4.laser_y <= 0:
+				disparoActivo4 = False
+				pasodisparo4 = False
+				las4.kill()
+
+		if disparoActivo5:
+			las5.update()
+			screen.blit(las5.image, las5.rect)
+			print ('Laser 5: ',las5.laser_y)
+			if las5.laser_y <= 0:
+				disparoActivo5 = False
+				las5.kill()
+
 		pygame.display.flip()
 		clock.tick(24)
 		tanque.update()
+
+
 	pygame.quit()
 
 if __name__ == '__main__':
