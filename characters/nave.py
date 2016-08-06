@@ -55,20 +55,16 @@ class Nave(pygame.sprite.Sprite):
 			upx = upx+self.acelerador(key)
 			upy = upy-self.acelerador(key)
 
-
 		elif key[K_RIGHT] and key[K_DOWN]:
 			upx = upx+self.acelerador(key)
 			upy = upy+self.acelerador(key)
-
 
 		elif key[K_LEFT] and key[K_DOWN]:
 			upx = upx-self.acelerador(key)
 			upy = upy+self.acelerador(key)
 
-
 		elif key[K_LEFT]:
 			upx = upx-self.acelerador(key)
-
 
 		elif key[K_RIGHT]:
 			upx = upx+self.acelerador(key)
@@ -77,14 +73,11 @@ class Nave(pygame.sprite.Sprite):
 			upy -= self.acelerador(key)*2
 			upx = upx
 
-
 		elif key[K_DOWN]:
 			upy = upy+self.acelerador(key)*2
 			upx = upx
 
-
 		else:
-
 			return False
 
 
@@ -105,7 +98,6 @@ class Nave(pygame.sprite.Sprite):
 
 
 	def acelerador(self,key):
-
 		aceleron = self.speed
 		if key[K_a]:
 				aceleron = VELOCIDAD*3
@@ -124,11 +116,7 @@ class Laser(pygame.sprite.Sprite):
 		self.laser_y = yl+5
 
 	def update(self):
-
-
-
 		self.laser_y= self.laser_y-self.speedLaser
-
 
 		if self.laser_x == 0:
 			self.rect.kill()

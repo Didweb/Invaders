@@ -57,7 +57,9 @@ def main():
 	pasodisparo3 = False
 	pasodisparo4 = False
 	jugar = True
-	disparos = {}
+	disparoActivoD = {1:False, 2:False, 3:False, 4:False, 5:False,6:False, 7:False, 8:False}
+	pasoDisparoD = {1:False, 2:False, 3:False, 4:False, 5:False,6:False, 7:False, 8:False}
+	lasersActivosD = {}
 	nDisparos = 0
 	while jugar:
 
@@ -72,93 +74,51 @@ def main():
 			key = pygame.key.get_pressed()
 
 			if key[K_x]:
-				if disparoActivo == False:
-					disparoActivo = True
-					nDisparos += 1
-					las = Laser(tanque.rect.x,tanque.rect.y)
-					las.update()
+				for dA in disparoActivoD:
+					if disparoActivoD[dA]==True:
+						unTiro = lasersActivosD[dA]
+						unTiro.update()
 
+					elif dA == 1:
+							unTiro = Laser(tanque.rect.x,tanque.rect.y)
+							unTiro.update()
+							lasersActivosD[dA] = unTiro
+							disparoActivoD[dA] = True
+							nDisparos += 1
 
-				if disparoActivo2 == False and pasodisparo1 == True:
-					disparoActivo2 = True
-					nDisparos += 1
-					las2 = Laser(tanque.rect.x,tanque.rect.y)
-					las2.update()
+					elif dA > 1:
+						if disparoActivoD[dA-1]==True and pasoDisparoD[dA-1] == True:
+							unTiro = Laser(tanque.rect.x,tanque.rect.y)
+							unTiro.update()
+							lasersActivosD[dA] = unTiro
+							disparoActivoD[dA] = True
+							nDisparos += 1
 
-				if disparoActivo3 == False and pasodisparo2 == True:
-					disparoActivo3 = True
-					nDisparos += 1
-					las3 = Laser(tanque.rect.x,tanque.rect.y)
-					las3.update()
-
-				if disparoActivo4 == False and pasodisparo3 == True:
-					disparoActivo4 = True
-					nDisparos += 1
-					las4 = Laser(tanque.rect.x,tanque.rect.y)
-					las4.update()
-
-				if disparoActivo5 == False and pasodisparo4 == True:
-					disparoActivo5 = True
-					nDisparos += 1
-					las5 = Laser(tanque.rect.x,tanque.rect.y)
-					las5.update()
 
 		screen.fill(colorBG)
 		screen.blit(tanque.image, tanque.rect)
 
 
-		if disparoActivo:
-			las.update()
-			screen.blit(las.image, las.rect)
-			print ('Laser 1: ',las.laser_y)
-			pasodisparo1 = True
-			if las.laser_y <= 0:
-				disparoActivo = False
-				pasodisparo1 = False
-				las.kill()
 
-		if disparoActivo2:
-			las2.update()
-			screen.blit(las2.image, las2.rect)
-			print ('Laser 2: ',las2.laser_y)
-			pasodisparo2 = True
-			if las2.laser_y <= 0:
-				disparoActivo2 = False
-				pasodisparo2 = False
-				las2.kill()
+		for dA in disparoActivoD:
 
-		if disparoActivo3:
-			las3.update()
-			screen.blit(las3.image, las3.rect)
-			print ('Laser 3: ',las3.laser_y)
-			pasodisparo3 = True
-			if las3.laser_y <= 0:
-				disparoActivo3 = False
-				pasodisparo3 = False
-				las3.kill()
+			if disparoActivoD[dA] == True:
+				unTiro = lasersActivosD[dA]
+				unTiro.update()
+				screen.blit(unTiro.image, unTiro.rect)
+				pasoDisparoD[dA] = True
 
-		if disparoActivo4:
-			las4.update()
-			screen.blit(las4.image, las4.rect)
-			print ('Laser 4: ',las4.laser_y)
-			pasodisparo4 = True
-			if las4.laser_y <= 0:
-				disparoActivo4 = False
-				pasodisparo4 = False
-				las4.kill()
-
-		if disparoActivo5:
-			las5.update()
-			screen.blit(las5.image, las5.rect)
-			print ('Laser 5: ',las5.laser_y)
-			if las5.laser_y <= 0:
-				disparoActivo5 = False
-				las5.kill()
+				if unTiro.laser_y <= 0:
+					pasoDisparoD[dA] = False
+					disparoActivoD[dA] = False
+					unTiro.kill()
+				else:
+					lasersActivosD[dA] = unTiro
 
 		pygame.display.flip()
 		clock.tick(24)
 		tanque.update()
-
+		print ('Nº de disparos: ',nDisparos)
 
 	pygame.quit()
 
