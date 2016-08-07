@@ -26,7 +26,7 @@ import pygame, sys
 from pygame.locals import *
 
 from characters.nave import (Nave,Laser)
-
+from annex.puntuaciones import (Puntos)
 
 ANCHO = 600
 ALTO = 450
@@ -47,23 +47,14 @@ def main():
 
 	clock = pygame.time.Clock()
 
-	disparoActivo = False
-	disparoActivo2 = False
-	disparoActivo3 = False
-	disparoActivo4 = False
-	disparoActivo5 = False
-	pasodisparo1 = False
-	pasodisparo2 = False
-	pasodisparo3 = False
-	pasodisparo4 = False
 	jugar = True
 	disparoActivoD = {1:False, 2:False, 3:False, 4:False, 5:False,6:False, 7:False, 8:False}
 	pasoDisparoD = {1:False, 2:False, 3:False, 4:False, 5:False,6:False, 7:False, 8:False}
 	lasersActivosD = {}
-	nDisparos = 0
+
+	DataPuntos = Puntos()
+
 	while jugar:
-
-
 
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -71,28 +62,28 @@ def main():
 				pygame.quit()
 				sys.exit()
 
-			key = pygame.key.get_pressed()
+		key = pygame.key.get_pressed()
 
-			if key[K_x]:
-				for dA in disparoActivoD:
-					if disparoActivoD[dA]==True:
-						unTiro = lasersActivosD[dA]
+		if key[K_x]:
+			for dA in disparoActivoD:
+				if disparoActivoD[dA]==True:
+					unTiro = lasersActivosD[dA]
+					unTiro.update()
+
+				elif dA == 1:
+						unTiro = Laser(tanque.rect.x,tanque.rect.y)
 						unTiro.update()
+						lasersActivosD[dA] = unTiro
+						disparoActivoD[dA] = True
+						DataPuntos.AumentaDisparos()
 
-					elif dA == 1:
-							unTiro = Laser(tanque.rect.x,tanque.rect.y)
-							unTiro.update()
-							lasersActivosD[dA] = unTiro
-							disparoActivoD[dA] = True
-							nDisparos += 1
-
-					elif dA > 1:
-						if disparoActivoD[dA-1]==True and pasoDisparoD[dA-1] == True:
-							unTiro = Laser(tanque.rect.x,tanque.rect.y)
-							unTiro.update()
-							lasersActivosD[dA] = unTiro
-							disparoActivoD[dA] = True
-							nDisparos += 1
+				elif dA > 1:
+					if disparoActivoD[dA-1]==True and pasoDisparoD[dA-1] == True:
+						unTiro = Laser(tanque.rect.x,tanque.rect.y)
+						unTiro.update()
+						lasersActivosD[dA] = unTiro
+						disparoActivoD[dA] = True
+						DataPuntos.AumentaDisparos()
 
 
 		screen.fill(colorBG)
@@ -116,9 +107,9 @@ def main():
 					lasersActivosD[dA] = unTiro
 
 		pygame.display.flip()
-		clock.tick(24)
+		clock.tick(30)
 		tanque.update()
-		print ('Nº de disparos: ',nDisparos)
+
 
 	pygame.quit()
 

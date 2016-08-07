@@ -43,7 +43,7 @@ class Nave(pygame.sprite.Sprite):
 	def update(self):
 		key = pygame.key.get_pressed()
 		valores = self.rect
-		upx = valores[0]+25
+		upx = valores[0]+20
 		upy = valores[1]+25
 
 
@@ -112,8 +112,8 @@ class Laser(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = (xl,xl)
 		self.speedLaser = VELOCIDAD_LASER
-		self.laser_x = xl+25
-		self.laser_y = yl+5
+		self.laser_x = xl+18
+		self.laser_y = yl+25
 
 	def update(self):
 		self.laser_y= self.laser_y-self.speedLaser
@@ -122,3 +122,10 @@ class Laser(pygame.sprite.Sprite):
 			self.rect.kill()
 
 		self.rect.center = (self.laser_x, self.laser_y)
+
+
+class Player():
+	def __init__(self):
+
+
+
