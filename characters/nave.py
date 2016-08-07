@@ -42,6 +42,9 @@ class Nave(pygame.sprite.Sprite):
 		self.rect.center = (ANCHO/2,LINEA_INF)
 		self.speed = VELOCIDAD
 
+	def PosicionInicio(self):
+		self.rect.center = (ANCHO/2,LINEA_INF)
+
 	def update(self):
 		key = pygame.key.get_pressed()
 		valores = self.rect
@@ -78,6 +81,8 @@ class Nave(pygame.sprite.Sprite):
 		elif key[K_DOWN]:
 			upy = upy+self.acelerador(key)*2
 			upx = upx
+
+
 
 		else:
 			return False
@@ -135,43 +140,77 @@ class Player():
 		self.screen = screen
 
 	def Gatillo(self,DataPuntos,tanX,tanY):
-		key = pygame.key.get_pressed()
 
-		if key[K_x]:
+		key = pygame.key.get_pressed()
+		if key[K_j] and key[K_k]:
+			DataPuntos.CargarMunicion(1000000)
+
+		if DataPuntos.get_municion() > 0:
+			key = pygame.key.get_pressed()
+
+			if key[K_x]:
+				for dA in self.disparoActivoD:
+
+					if self.disparoActivoD[dA]==True:
+						unTiro = self.lasersActivosD[dA]
+						unTiro.update()
+
+
+					elif dA == 1:
+							unTiro = Laser(tanX,tanY)
+							unTiro.update()
+							self.lasersActivosD[dA] = unTiro
+							self.disparoActivoD[dA] = True
+							DataPuntos.AumentaDisparos()
+
+
+					elif dA > 1:
+						if self.disparoActivoD[dA-1]==True and self.pasoDisparoD[dA-1] == True:
+							unTiro = Laser(tanX,tanY)
+							unTiro.update()
+							self.lasersActivosD[dA] = unTiro
+							self.disparoActivoD[dA] = True
+							DataPuntos.AumentaDisparos()
+
+
+
+
+
+
+	def Dispara(self,enemy,DataPuntos):
+
+
+
+		if DataPuntos.get_municion() > 0:
 			for dA in self.disparoActivoD:
-				if self.disparoActivoD[dA]==True:
+
+				if self.disparoActivoD[dA] == True:
+
 					unTiro = self.lasersActivosD[dA]
 					unTiro.update()
+					self.pasoDisparoD[dA] = True
 
-				elif dA == 1:
-						unTiro = Laser(tanX,tanY)
-						unTiro.update()
-						self.lasersActivosD[dA] = unTiro
-						self.disparoActivoD[dA] = True
-						DataPuntos.AumentaDisparos()
+					# Impacto sobre enemigo
+					if unTiro.rect.colliderect(enemy):
+						DataPuntos.AumentaAciertos()
+						self.pasoDisparoD[dA] = False
+						self.disparoActivoD[dA] = False
+						unTiro.kill()
 
-				elif dA > 1:
-					if self.disparoActivoD[dA-1]==True and self.pasoDisparoD[dA-1] == True:
-						unTiro = Laser(tanX,tanY)
-						unTiro.update()
-						self.lasersActivosD[dA] = unTiro
-						self.disparoActivoD[dA] = True
-						DataPuntos.AumentaDisparos()
+						print('Impacto Disparo: ',dA,' Estado:',self.disparoActivoD[dA])
+						print('* Aciertos: ',DataPuntos.nAciertos)
+						print('* Disparos: ',DataPuntos.nDisparos)
+						print('* Porcentaje: ',DataPuntos.PorcentajeAciertos(),'%')
+
+					else:
+						self.screen.blit(unTiro.image, unTiro.rect)
+
+						if unTiro.laser_y <= 0:
+							self.pasoDisparoD[dA] = False
+							self.disparoActivoD[dA] = False
+							unTiro.kill()
+						else:
+							self.lasersActivosD[dA] = unTiro
 
 
-	def Dispara(self):
 
-		for dA in self.disparoActivoD:
-
-			if self.disparoActivoD[dA] == True:
-				unTiro = self.lasersActivosD[dA]
-				unTiro.update()
-				self.screen.blit(unTiro.image, unTiro.rect)
-				self.pasoDisparoD[dA] = True
-
-				if unTiro.laser_y <= 0:
-					self.pasoDisparoD[dA] = False
-					self.disparoActivoD[dA] = False
-					unTiro.kill()
-				else:
-					self.lasersActivosD[dA] = unTiro

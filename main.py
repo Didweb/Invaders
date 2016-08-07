@@ -26,13 +26,16 @@ import pygame, sys
 from pygame.locals import *
 
 from characters.nave import (Nave,Laser,Player)
+from characters.enemy import (Alien_1)
 from annex.puntuaciones import (Puntos)
-
+from annex.mensajes import (Mensajes)
 ANCHO = 600
 ALTO = 450
 
 
 
+Op_menu = True
+Op_jugar = False
 
 def main():
 
@@ -41,13 +44,18 @@ def main():
 	pygame.display.set_caption('Invaders 1')
 	reloj = pygame.time.Clock()
 
+
+
+	# Personajes
+	enemys = Alien_1()
 	tanque = Nave()
+	msn = Mensajes(screen,(ANCHO,ALTO))
+
 	#screen.blit(tanque.image, tanque.rect)
 	colorBG = (0,0,0)
 
 	clock = pygame.time.Clock()
 
-	jugar = True
 	disparoActivoD = {1:False, 2:False, 3:False, 4:False, 5:False,6:False, 7:False, 8:False}
 	pasoDisparoD = {1:False, 2:False, 3:False, 4:False, 5:False,6:False, 7:False, 8:False}
 	lasersActivosD = {}
@@ -55,30 +63,77 @@ def main():
 	DataPuntos = Puntos()
 	Jugador = Player(screen)
 
-	while jugar:
-
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				juagr = False
-				pygame.quit()
-				sys.exit()
-
-		# Prepara el disparo apretando el gatillo
-		Jugador.Gatillo(DataPuntos,tanque.rect.x,tanque.rect.y)
-
-		# el fondo y la nave
-		screen.fill(colorBG)
-		screen.blit(tanque.image, tanque.rect)
-
-		# Saca disparo y controla su vida
-		Jugador.Dispara()
-
-		pygame.display.flip()
-		clock.tick(30)
-		tanque.update()
 
 
-	pygame.quit()
+	def Menu(Op_menu,Op_jugar):
+		print('M [menu = ',Op_menu,' y jugar=',Op_jugar,']')
+		while  Op_menu:
+			screen.fill(colorBG)
+
+			msn.MensajeSimple('c para Continuar y q Salir',(255,0,0))
+			pygame.display.update()
+
+			for event in pygame.event.get():
+
+				if event.type == pygame.QUIT:
+					Op_menu = False
+					pygame.quit()
+					sys.exit()
+
+				if event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_q:
+						Op_menu = False
+						pygame.quit()
+						sys.exit()
+
+					if event.key == pygame.K_c:
+						Op_menu = False
+						Op_jugar = True
+						Jugar(Op_menu,Op_jugar)
+
+
+
+	def Jugar(Op_menu,Op_jugar):
+		print('J [menu = ',Op_menu,' y jugar=',Op_jugar,']')
+		while Op_jugar:
+
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					Op_jugar = False
+					pygame.quit()
+					sys.exit()
+
+			# Prepara el disparo apretando el gatillo
+			Jugador.Gatillo(DataPuntos,tanque.rect.x,tanque.rect.y)
+
+
+
+
+			if tanque.rect.colliderect(enemys.rect):
+				Op_jugar = False
+				Op_menu = True
+				tanque.PosicionInicio()
+				Menu(Op_menu,Op_jugar)
+
+			else:
+				# el fondo y la nave
+				screen.fill(colorBG)
+				screen.blit(tanque.image, tanque.rect)
+				screen.blit(enemys.image, enemys.rect)
+
+				# Saca disparo y controla su vida
+				Jugador.Dispara(enemys.rect,DataPuntos)
+			msn.Cabecera(DataPuntos.get_NDisparos(),DataPuntos.get_PorAciertos(),DataPuntos.PorcentajeMunicion())
+			pygame.display.flip()
+			clock.tick(30)
+			tanque.update()
+
+	Menu(Op_menu,Op_jugar)
+
+
+
+
+
 
 if __name__ == '__main__':
 	main()
