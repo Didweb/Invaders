@@ -32,6 +32,8 @@ VELOCIDAD_LASER = 15
 import pygame, sys
 from pygame.locals import *
 
+
+
 class Nave(pygame.sprite.Sprite):
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
@@ -124,8 +126,52 @@ class Laser(pygame.sprite.Sprite):
 		self.rect.center = (self.laser_x, self.laser_y)
 
 
+
 class Player():
-	def __init__(self):
+	def __init__(self,screen):
+		self.disparoActivoD = {1:False, 2:False, 3:False, 4:False, 5:False,6:False, 7:False, 8:False}
+		self.pasoDisparoD = {1:False, 2:False, 3:False, 4:False, 5:False,6:False, 7:False, 8:False}
+		self.lasersActivosD = {}
+		self.screen = screen
+
+	def Gatillo(self,DataPuntos,tanX,tanY):
+		key = pygame.key.get_pressed()
+
+		if key[K_x]:
+			for dA in self.disparoActivoD:
+				if self.disparoActivoD[dA]==True:
+					unTiro = self.lasersActivosD[dA]
+					unTiro.update()
+
+				elif dA == 1:
+						unTiro = Laser(tanX,tanY)
+						unTiro.update()
+						self.lasersActivosD[dA] = unTiro
+						self.disparoActivoD[dA] = True
+						DataPuntos.AumentaDisparos()
+
+				elif dA > 1:
+					if self.disparoActivoD[dA-1]==True and self.pasoDisparoD[dA-1] == True:
+						unTiro = Laser(tanX,tanY)
+						unTiro.update()
+						self.lasersActivosD[dA] = unTiro
+						self.disparoActivoD[dA] = True
+						DataPuntos.AumentaDisparos()
 
 
+	def Dispara(self):
 
+		for dA in self.disparoActivoD:
+
+			if self.disparoActivoD[dA] == True:
+				unTiro = self.lasersActivosD[dA]
+				unTiro.update()
+				self.screen.blit(unTiro.image, unTiro.rect)
+				self.pasoDisparoD[dA] = True
+
+				if unTiro.laser_y <= 0:
+					self.pasoDisparoD[dA] = False
+					self.disparoActivoD[dA] = False
+					unTiro.kill()
+				else:
+					self.lasersActivosD[dA] = unTiro

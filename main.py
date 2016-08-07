@@ -25,7 +25,7 @@
 import pygame, sys
 from pygame.locals import *
 
-from characters.nave import (Nave,Laser)
+from characters.nave import (Nave,Laser,Player)
 from annex.puntuaciones import (Puntos)
 
 ANCHO = 600
@@ -53,6 +53,7 @@ def main():
 	lasersActivosD = {}
 
 	DataPuntos = Puntos()
+	Jugador = Player(screen)
 
 	while jugar:
 
@@ -62,49 +63,15 @@ def main():
 				pygame.quit()
 				sys.exit()
 
-		key = pygame.key.get_pressed()
+		# Prepara el disparo apretando el gatillo
+		Jugador.Gatillo(DataPuntos,tanque.rect.x,tanque.rect.y)
 
-		if key[K_x]:
-			for dA in disparoActivoD:
-				if disparoActivoD[dA]==True:
-					unTiro = lasersActivosD[dA]
-					unTiro.update()
-
-				elif dA == 1:
-						unTiro = Laser(tanque.rect.x,tanque.rect.y)
-						unTiro.update()
-						lasersActivosD[dA] = unTiro
-						disparoActivoD[dA] = True
-						DataPuntos.AumentaDisparos()
-
-				elif dA > 1:
-					if disparoActivoD[dA-1]==True and pasoDisparoD[dA-1] == True:
-						unTiro = Laser(tanque.rect.x,tanque.rect.y)
-						unTiro.update()
-						lasersActivosD[dA] = unTiro
-						disparoActivoD[dA] = True
-						DataPuntos.AumentaDisparos()
-
-
+		# el fondo y la nave
 		screen.fill(colorBG)
 		screen.blit(tanque.image, tanque.rect)
 
-
-
-		for dA in disparoActivoD:
-
-			if disparoActivoD[dA] == True:
-				unTiro = lasersActivosD[dA]
-				unTiro.update()
-				screen.blit(unTiro.image, unTiro.rect)
-				pasoDisparoD[dA] = True
-
-				if unTiro.laser_y <= 0:
-					pasoDisparoD[dA] = False
-					disparoActivoD[dA] = False
-					unTiro.kill()
-				else:
-					lasersActivosD[dA] = unTiro
+		# Saca disparo y controla su vida
+		Jugador.Dispara()
 
 		pygame.display.flip()
 		clock.tick(30)
