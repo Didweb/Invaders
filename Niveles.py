@@ -23,6 +23,7 @@
 #
 from annex.puntuaciones import (Puntos)
 from characters.nave import (Nave)
+from characters.enemy import (Alien_1)
 
 class ServNiveles:
 
@@ -43,6 +44,7 @@ class ServNiveles:
 
 		self.Tanque = Nave(self.screen,self.DataPuntos)
 		self.PosInicioNave = self.Tanque.PosicionInicio()
+		self.Enemys = Alien_1(self.screen)
 
 
 
@@ -50,12 +52,14 @@ class ServNiveles:
 
 		self.screen.fill((0,0,0))
 
-
-
 		self.Tanque.NaveMostrar()
 		self.Tanque.update()
 		self.Tanque.Disparo()
 		self.Tanque.updateDisparos()
+		self.Enemys.paint()
+		self.Enemys.movimientos()
+
+
 
 		# cabecera
 		self.msn.Cabecera( self.DataPuntos.nDisparos, \

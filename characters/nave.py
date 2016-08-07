@@ -37,9 +37,11 @@ from pygame.locals import *
 class Nave(pygame.sprite.Sprite):
 	def __init__(self,screen,DataPuntos):
 		pygame.sprite.Sprite.__init__(self)
+
 		self.image = pygame.image.load('./img/nave_1.png').convert_alpha()
 		self.rect = self.image.get_rect()
 		self.rect.center = (ANCHO/2,LINEA_INF)
+
 		self.speed = VELOCIDAD
 		self.screen = screen
 
@@ -64,28 +66,35 @@ class Nave(pygame.sprite.Sprite):
 		if key[K_LEFT] and key[K_UP]:
 			upx = upx-self.acelerador(key)
 			upy = upy-self.acelerador(key)
+			self.NaveCambio('./img/nave_1_iz.png')
 
 		elif key[K_RIGHT] and key[K_UP]:
 			upx = upx+self.acelerador(key)
 			upy = upy-self.acelerador(key)
+			self.NaveCambio('./img/nave_1_de.png')
 
 		elif key[K_RIGHT] and key[K_DOWN]:
 			upx = upx+self.acelerador(key)
 			upy = upy+self.acelerador(key)
+			self.NaveCambio('./img/nave_1_de.png')
 
 		elif key[K_LEFT] and key[K_DOWN]:
 			upx = upx-self.acelerador(key)
 			upy = upy+self.acelerador(key)
+			self.NaveCambio('./img/nave_1_iz.png')
 
 		elif key[K_LEFT]:
 			upx = upx-self.acelerador(key)
+			self.NaveCambio('./img/nave_1_iz.png')
 
 		elif key[K_RIGHT]:
 			upx = upx+self.acelerador(key)
+			self.NaveCambio('./img/nave_1_de.png')
 
 		elif key[K_UP]:
 			upy -= self.acelerador(key)*2
 			upx = upx
+			self.IMGfogonazo()
 
 		elif key[K_DOWN]:
 			upy = upy+self.acelerador(key)*2
@@ -94,10 +103,8 @@ class Nave(pygame.sprite.Sprite):
 		elif key[K_x]:
 			if self.DataPuntos.get_municion() > 0:
 				self.Disparo()
-
-
 		else:
-			return False
+			self.NaveCambio('./img/nave_1.png')
 
 
 		if upx>=ANCHO-25:
@@ -115,18 +122,27 @@ class Nave(pygame.sprite.Sprite):
 		self.rect.center = (upx, upy)
 
 
+
 	def acelerador(self,key):
-		upx = self.rect[0]
-		upy = self.rect[1]
 		aceleron = self.speed
 		if key[K_a]:
-			aceleron = VELOCIDAD*3
-			self.imageAC = pygame.image.load('./img/nave_1_aceleron.png').convert_alpha()
-			self.rectAC = self.imageAC.get_rect()
-			self.rectAC.center = (upx+20,upy+50)
-			self.screen.blit(self.imageAC, self.rectAC)
+			aceleron = VELOCIDAD+4
+			self.IMGfogonazo()
 
 		return aceleron
+
+	def IMGfogonazo(self):
+		upx = self.rect[0]
+		upy = self.rect[1]
+		self.imageAC = pygame.image.load('./img/nave_1_aceleron.png').convert_alpha()
+		self.rectAC = self.imageAC.get_rect()
+		self.rectAC.center = (upx+20,upy+50)
+		self.screen.blit(self.imageAC, self.rectAC)
+
+
+	def NaveCambio(self,img):
+		self.image = pygame.image.load(img).convert_alpha()
+		self.screen.blit(self.image,self.rect)
 
 
 	def Disparo(self):

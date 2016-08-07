@@ -24,7 +24,7 @@
 
 import pygame, sys, os
 from pygame.locals import *
-
+import random
 from .sujetos import (sujeto,Play,load_img)
 
 ANCHO = 600
@@ -36,10 +36,13 @@ VEL_SHOT_ALIEN_1 = 15
 sujeto
 
 class Alien_1(pygame.sprite.Sprite):
-	def __init__(self):
+	def __init__(self,screen):
+		self.screen = screen
 		self.valorPuntos = 10
 		self.speed = VEL_ALIEN_1
 		self.vivo = True
+
+
 		path_ebeny_1 = './img/enemy_1'
 		path_ebeny_1_exp = './img/enemy_1_exp'
 
@@ -69,15 +72,19 @@ class Alien_1(pygame.sprite.Sprite):
 		self.indicador = 30
 
 
-
-
-
-	def update(self, superficie):
+		self.rect = self.imagenes[self.frame].get_rect()
 		self.rect.center = (ANCHO/2,ALTO/2)
-		elf.rect = self.imagenes[self.frame].get_rect()
-		superficie.blit(self.imagenes[self.frame],self.rect)
+		self.screen.blit(self.imagenes[self.frame],self.rect)
 
 
+
+
+
+	def update(self):
+
+		self.rect = self.imagenes[self.frame].get_rect()
+		self.rect.center = self.movimientos()
+		self.screen.blit(self.imagenes[self.frame],self.rect)
 
 	def nextFrame(self):
 		self.frame = self.indicador % len(self.imagenes)
@@ -94,17 +101,26 @@ class Alien_1(pygame.sprite.Sprite):
 		self.vivo = False
 
 
-class EscuadronAlien_1(Alien_1):
-	def __init__(self):
-		Alien_1.__init__(self)
-		nEscuadron = 3
-		Escuadron = {}
-		esx = 50
-		esy = ALTO/2
+	def movimientos(self):
+		mx = self.rect[0]
+		my = self.rect[1]
+		ale = random.randint(1, 4)
+		if mx<=0:
+			mx = mx+1
+		elif mx>=ANCHO:
+			mx = mx-1
 
-		for i in range(nEscuadron):
+		if my<=15:
+			my = my+ale
+		elif my>=ALTO:
+			my = my+ale
 
-			print('Hola alien: ',i)
+		return (mx,my)
+
+
+	def paint(self):
+		self.update()
+		self.nextFrame()
 
 
 

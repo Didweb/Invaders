@@ -99,14 +99,13 @@ def main():
 					pygame.quit()
 					sys.exit()
 
+
 			if SJ.SJnivel == 1:
 				SJ.Nivel_1()
 
 
-
-
 			pygame.display.flip()
-			clock.tick(30)
+			clock.tick(50)
 
 
 	Menu(Op_menu,Op_jugar)
