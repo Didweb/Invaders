@@ -30,6 +30,9 @@ class Puntos:
 		self.PorAciertos = 0
 		self.Por_Municion = 0
 		self.municion = PACKS_MUNICION
+		self.Nivel = 1
+		self.Puntuacion = 0
+		self.Vidas = 3
 
 	def AumentaDisparos(self):
 		self.nDisparos += 1
@@ -48,6 +51,7 @@ class Puntos:
 
 	def get_PorAciertos(self):
 		return self.PorAciertos
+
 
 
 	def get_municion(self):

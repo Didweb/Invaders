@@ -32,25 +32,47 @@ class Mensajes(Puntos):
 		self.ANCHO = MedidaScreen[0]
 		self.ALTO = MedidaScreen[1]
 		self.puntos = Puntos()
-
+		self.imageVidas1 = pygame.image.load('./img/vida_1.png').convert_alpha()
+		self.imageVidas2 = pygame.image.load('./img/vida_2.png').convert_alpha()
 
 	def MensajeSimple(self, txt, color):
 		font = pygame.font.SysFont("arial",40)
 		pantalla_texto = font.render(txt,True,color )
 		self.screen.blit(pantalla_texto,(self.ANCHO/4, self.ALTO/2))
 
-	def Cabecera(self,nd,pa,mu):
+	def Cabecera(self,nd,pa,mu,vidas):
 		font = pygame.font.SysFont("arial",12)
-		pygame.draw.rect(self.screen, (73,9,9), [0, 0, self.ANCHO, 20 ],0)
+		pygame.draw.rect(self.screen, (73,9,9), [0, 0, self.ANCHO, 35 ],0)
 		pa = "{:.0f}".format(pa)
 		pa = str(pa)
 
 		muN = int(mu)
 		mu = str(muN)
-		txt = 'Eficiencia: '+pa+'% '
+		txt = pa+'% '
 
-		pygame.draw.rect(self.screen,(233,16,8), [15,5,100,10],0)
-		pygame.draw.rect(self.screen,(6,161,4), [15,5,muN,10],0)
+		pygame.draw.rect(self.screen,(233,16,8), [15,20,100,10],0)
+		pygame.draw.rect(self.screen,(6,161,4), [15,20,muN,10],0)
 
-		pantalla_texto = font.render(txt,True,(102,238,109) )
-		self.screen.blit(pantalla_texto,(200, 4))
+		for i in range(vidas):
+			posix = 580-(20*i)
+
+			self.rect = self.imageVidas1.get_rect()
+			self.rect.center = (posix,15)
+			self.screen.blit(self.imageVidas1,self.rect)
+
+
+
+
+
+
+
+		txt2 = 'Munición...'
+		pantalla_texto2 = font.render(txt2,True,(102,150,109) )
+		self.screen.blit(pantalla_texto2,(15, 4))
+
+		txt3 = 'Efc.'
+		pantalla_texto3 = font.render(txt3,True,(102,150,109) )
+		self.screen.blit(pantalla_texto3,(120, 4))
+
+		pantalla_texto = font.render(txt,True,(102,150,109) )
+		self.screen.blit(pantalla_texto,(120, 20))

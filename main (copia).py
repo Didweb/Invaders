@@ -24,7 +24,7 @@
 
 import pygame, sys
 from pygame.locals import *
-from Niveles import (ServNiveles)
+
 
 from annex.mensajes import (Mensajes)
 ANCHO = 600
@@ -50,6 +50,12 @@ def main():
 	screen = pygame.display.set_mode((ANCHO,ALTO))
 	pygame.display.set_caption('Invaders 1')
 	reloj = pygame.time.Clock()
+
+
+
+	# Personajes
+	#enemys = Alien_1()
+	tanque = Nave()
 	msn = Mensajes(screen,(ANCHO,ALTO))
 
 	#screen.blit(tanque.image, tanque.rect)
@@ -58,7 +64,8 @@ def main():
 	clock = pygame.time.Clock()
 
 
-
+	DataPuntos = Puntos()
+	Jugador = Player(screen)
 
 
 
@@ -66,7 +73,6 @@ def main():
 
 		while  Op_menu:
 			screen.fill(colorBG)
-
 			msn.MensajeSimple('c para Continuar y q Salir',(255,0,0))
 			pygame.display.update()
 
@@ -89,7 +95,7 @@ def main():
 						Jugar(Op_menu,Op_jugar)
 
 
-	SJ = ServNiveles(Nivel,screen,(ANCHO,ALTO),msn)
+
 	def Jugar(Op_menu,Op_jugar):
 
 		while Op_jugar:
@@ -99,15 +105,42 @@ def main():
 					pygame.quit()
 					sys.exit()
 
-			if SJ.SJnivel == 1:
-				SJ.Nivel_1()
+
+			if Nivel == 1:
 
 
 
+
+			# Prepara el disparo apretando el gatillo
+			Jugador.Gatillo(DataPuntos,tanque.rect.x,tanque.rect.y)
+
+
+
+
+			# el fondo y la nave
+			screen.fill(colorBG)
+			screen.blit(tanque.image, tanque.rect)
+
+			# Enemigos Alien_1
+			#screen.blit(enemys.image, enemys.rect)
+
+			EscuadronAlien_1()
+			#enemys.update(screen)
+			#enemys.nextFrame()
+
+			# Saca disparo y controla su vida
+			Jugador.Dispara(DataPuntos)
+
+
+
+
+			msn.Cabecera(DataPuntos.get_NDisparos(), \
+						DataPuntos.get_PorAciertos(),\
+						DataPuntos.PorcentajeMunicion())
 
 			pygame.display.flip()
 			clock.tick(30)
-
+			tanque.update()
 
 	Menu(Op_menu,Op_jugar)
 
