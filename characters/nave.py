@@ -50,6 +50,8 @@ class Nave(pygame.sprite.Sprite):
 		self.lasersActivosD = {}
 		self.DataPuntos = DataPuntos
 
+
+
 	def PosicionInicio(self):
 		self.rect.center = (ANCHO/2,LINEA_INF)
 
@@ -177,7 +179,6 @@ class Nave(pygame.sprite.Sprite):
 
 
 
-
 	def updateDisparos(self):
 		for dA in self.disparoActivoD:
 
@@ -218,6 +219,8 @@ class Laser(pygame.sprite.Sprite):
 			self.rect.kill()
 
 		self.rect.center = (self.laser_x, self.laser_y)
+
+
 
 
 

@@ -25,6 +25,9 @@ from annex.puntuaciones import (Puntos)
 from characters.nave import (Nave)
 from characters.enemy import (Alien_1)
 
+import pygame, sys
+from pygame.locals import *
+
 class ServNiveles:
 
 	def __init__(self,nivel,screen,medidaSc,msn):
@@ -42,10 +45,19 @@ class ServNiveles:
 		self.DataPuntos.PorcentajeMunicion()
 		self.vidas = self.DataPuntos.Vidas
 
+
+
+
+
+
+
 		self.Tanque = Nave(self.screen,self.DataPuntos)
 		self.PosInicioNave = self.Tanque.PosicionInicio()
-		self.Enemys = Alien_1(self.screen)
 
+		self.EnemysNivel1 = 10
+		self.EnemysPeloton = {}
+		for x in range(0,self.EnemysNivel1):
+			self.EnemysPeloton[x] = Alien_1(self.screen)
 
 
 	def Nivel_1(self):
@@ -54,10 +66,18 @@ class ServNiveles:
 
 		self.Tanque.NaveMostrar()
 		self.Tanque.update()
+		#self.Enemys.update()
+
+		for ep in range(self.EnemysNivel1):
+			Enemigos = self.EnemysPeloton[ep]
+			Enemigos.update(self.Tanque)
+
 		self.Tanque.Disparo()
 		self.Tanque.updateDisparos()
-		self.Enemys.paint()
-		self.Enemys.movimientos()
+
+
+
+
 
 
 
