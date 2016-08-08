@@ -44,11 +44,11 @@ class Alien_1(pygame.sprite.Sprite):
 		self.speed = random.randint(1, 4)
 		self.vivo = True
 
-		self.MunicionAlien = 3
-		self.tiempoDisparo = 0
-		self.lasersActivosAliens = {}
 
 
+		self.disparoActivoD = {1:False, 2:False, 3:False}
+		self.pasoDisparoD = {1:False, 2:False, 3:False}
+		self.lasersActivosD = {}
 
 
 
@@ -59,17 +59,14 @@ class Alien_1(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = (self.x, self.y)
 
-		self.disparoActivoD = {1:False, 2:False, 3:False}
-		self.pasoDisparoD = {1:False, 2:False, 3:False}
-		self.lasersActivosD = {}
 
 
-
+	def get_elRect(self):
+		return self.rect
 
 	def update(self,TuNave):
 
 		corde = self.rect
-
 		coorTuNave = TuNave.rect
 
 		lax = corde[0]
@@ -82,7 +79,6 @@ class Alien_1(pygame.sprite.Sprite):
 		ale = random.randint(0,2)
 
 
-
 		if coorTuNave[0]>lax:
 			if ale == 0:
 				lax = lax+self.speed
@@ -93,17 +89,14 @@ class Alien_1(pygame.sprite.Sprite):
 				lax = lax-self.speed
 
 
-
-
 		self.x = lax
 		self.y = lay+1
 
+
+
+	def MostrarAlien(self):
 		self.rect = (self.x,self.y)
 		self.screen.blit(self.image,self.rect)
-
-
-
-
 
 
 
@@ -137,10 +130,10 @@ class Alien_1(pygame.sprite.Sprite):
 						self.lasersActivosD[dA] = unTiro
 						self.disparoActivoD[dA] = True
 
-			print ('Alien : ',dA,' <--Lanzado ')
 
 
-	def updateDisparosEnemy(self):
+
+	def updateDisparosEnemy(self,nave):
 		for dA in self.disparoActivoD:
 
 			if self.disparoActivoD[dA] == True:
@@ -148,6 +141,7 @@ class Alien_1(pygame.sprite.Sprite):
 				unTiro = self.lasersActivosD[dA]
 				unTiro.update()
 				self.pasoDisparoD[dA] = True
+
 
 
 				self.screen.blit(unTiro.image, unTiro.rect)
@@ -171,6 +165,7 @@ class LaserEnemy(pygame.sprite.Sprite):
 		self.speedLaser = VEL_SHOT_ALIEN_1
 		self.laser_x = xl+18
 		self.laser_y = yl+25
+		self.rect2 = pygame.Rect(self.laser_x, self.laser_y, 40, 40)
 
 	def update(self):
 		self.laser_y= self.laser_y+VEL_SHOT_ALIEN_1

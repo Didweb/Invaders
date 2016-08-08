@@ -25,6 +25,7 @@
 import pygame, sys
 from pygame.locals import *
 from Niveles import (ServNiveles)
+from annex.mensajes import (Mensajes)
 
 from annex.mensajes import (Mensajes)
 ANCHO = 600
@@ -32,15 +33,9 @@ ALTO = 450
 
 
 
-Op_menu = True
-Op_jugar = False
 
 
-def paint(player):
-	screen.blit(imagenFondo,[0,0])
-	player.update(screen)
-	pygame.display.update()
-	player.nextFrame()
+
 
 
 
@@ -50,65 +45,80 @@ def main():
 	screen = pygame.display.set_mode((ANCHO,ALTO))
 	pygame.display.set_caption('Invaders 1')
 	reloj = pygame.time.Clock()
+
 	msn = Mensajes(screen,(ANCHO,ALTO))
 
-	#screen.blit(tanque.image, tanque.rect)
+
 	colorBG = (0,0,0)
 	Nivel = 1
 	clock = pygame.time.Clock()
 
+	Op_menu = True
+	Op_jugar = True
 
 
+	class Cuadrado:
+		def __init__(self, x, y, lado, color, fondo):
+			self.x = x
+			self.y = y
+			self.color = color
+			self.fondo = fondo
+			self.lado = lado
+			self.rect = pygame.Rect(self.x,
+									self.y,
+									self.lado,
+									self.lado)
 
+		def __pinta(self, pantalla, color):
+			'Realiza el dibujo efectivo'
+			pygame.draw.rect(pantalla, color, self.rect, 0)
 
+		def pinta(self, pantalla):
+			'Pinta el cuadrado con el color propio'
+			self.__pinta(pantalla, self.color)
 
-	def Menu(Op_menu,Op_jugar):
+		def borra(self, pantalla):
+			'Borra el cuadrado'
+			# Realmente lo pinta con el color de fondo
+			self.__pinta(pantalla, self.fondo)
 
-		while  Op_menu:
-			screen.fill(colorBG)
+		def colisiona_con(self, cuadrado2):
+			'Comprueba la colisión con otro cuadrado'
+			return self.rect.colliderect(cuadrado2.rect)
 
-			msn.MensajeSimple('c para Continuar y q Salir',(255,0,0))
-			pygame.display.update()
+		def mover(self, avance_x, avance_y):
+			'avance del cuadrado en un cuadro (frame)'
+			self.rect.move_ip(avance_x, avance_y)
 
-			for event in pygame.event.get():
-
-				if event.type == pygame.QUIT:
-					Op_menu = False
-					pygame.quit()
-					sys.exit()
-
-				if event.type == pygame.KEYDOWN:
-					if event.key == pygame.K_q:
-						Op_menu = False
-						pygame.quit()
-						sys.exit()
-
-					if event.key == pygame.K_c:
-						Op_menu = False
-						Op_jugar = True
-						Jugar(Op_menu,Op_jugar)
-
+	cuadrado = Cuadrado(540,50, 35, (255,255,255), (0,0,0))
+	cuadrado2 = Cuadrado(540,50,35, (255,255,255), (0,0,0))
 
 	SJ = ServNiveles(Nivel,screen,(ANCHO,ALTO),msn)
-	def Jugar(Op_menu,Op_jugar):
-
-		while Op_jugar:
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					Op_jugar = False
-					pygame.quit()
-					sys.exit()
 
 
-			if SJ.SJnivel == 1:
-				SJ.Nivel_1()
+	while Op_jugar:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				Op_jugar = False
+				pygame.quit()
+				sys.exit()
 
 
-			pygame.display.flip()
-			clock.tick(50)
+		if SJ.SJnivel == 1:
+			SJ.Nivel_1()
+
+			if cuadrado.colisiona_con(cuadrado2):
+				print('COLISION!!!!!!!!!')
+			else:
+				print('sin colision...............')
 
 
-	Menu(Op_menu,Op_jugar)
+		clock.tick(50)
+
+	pygame.quit()
+
+
+
 
 
 

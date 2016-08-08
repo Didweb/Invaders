@@ -50,7 +50,9 @@ class Nave(pygame.sprite.Sprite):
 		self.lasersActivosD = {}
 		self.DataPuntos = DataPuntos
 
-
+	def colisiona_con(self, objeto):
+		if pygame.sprite.spritecollide(self,objeto):
+			print('COLISION INTERNA')
 
 	def PosicionInicio(self):
 		self.rect.center = (ANCHO/2,LINEA_INF)
@@ -69,11 +71,13 @@ class Nave(pygame.sprite.Sprite):
 			upx = upx-self.acelerador(key)
 			upy = upy-self.acelerador(key)
 			self.NaveCambio('./img/nave_1_iz.png')
+			self.IMGfogonazo()
 
 		elif key[K_RIGHT] and key[K_UP]:
 			upx = upx+self.acelerador(key)
 			upy = upy-self.acelerador(key)
 			self.NaveCambio('./img/nave_1_de.png')
+			self.IMGfogonazo()
 
 		elif key[K_RIGHT] and key[K_DOWN]:
 			upx = upx+self.acelerador(key)
@@ -129,8 +133,6 @@ class Nave(pygame.sprite.Sprite):
 		aceleron = self.speed
 		if key[K_a]:
 			aceleron = VELOCIDAD+4
-			self.IMGfogonazo()
-
 		return aceleron
 
 	def IMGfogonazo(self):
@@ -140,6 +142,7 @@ class Nave(pygame.sprite.Sprite):
 		self.rectAC = self.imageAC.get_rect()
 		self.rectAC.center = (upx+20,upy+50)
 		self.screen.blit(self.imageAC, self.rectAC)
+
 
 
 	def NaveCambio(self,img):
@@ -187,6 +190,7 @@ class Nave(pygame.sprite.Sprite):
 				unTiro = self.lasersActivosD[dA]
 				unTiro.update()
 				self.pasoDisparoD[dA] = True
+
 
 
 				self.screen.blit(unTiro.image, unTiro.rect)

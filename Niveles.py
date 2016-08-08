@@ -22,11 +22,17 @@
 #
 #
 from annex.puntuaciones import (Puntos)
-from characters.nave import (Nave)
-from characters.enemy import (Alien_1)
+
+from characters.nave import (Nave,Laser)
+from characters.enemy import (Alien_1,LaserEnemy)
 
 import pygame, sys
 from pygame.locals import *
+
+ANCHO = 600
+ALTO = 450
+ENEMYS_N1 = 10
+LINEA_INF = 420
 
 class ServNiveles:
 
@@ -46,42 +52,40 @@ class ServNiveles:
 		self.vidas = self.DataPuntos.Vidas
 
 
-
-
-
-
-
 		self.Tanque = Nave(self.screen,self.DataPuntos)
-		self.PosInicioNave = self.Tanque.PosicionInicio()
 
-		self.EnemysNivel1 = 10
-		self.EnemysPeloton = {}
-		for x in range(0,self.EnemysNivel1):
-			self.EnemysPeloton[x] = Alien_1(self.screen)
+		self.EscuadronAlien = {}
+		for x  in range(ENEMYS_N1):
+			self.EscuadronAlien[x] = Alien_1(self.screen)
 
 
 	def Nivel_1(self):
 
+		for x in range(ENEMYS_N1):
+			Alien = self.EscuadronAlien[x]
+			Alien.update(self.Tanque)
+
+
+
 		self.screen.fill((0,0,0))
 
-		self.Tanque.NaveMostrar()
 		self.Tanque.update()
-		#self.Enemys.update()
 
-		for ep in range(self.EnemysNivel1):
-			Enemigos = self.EnemysPeloton[ep]
-			Enemigos.update(self.Tanque)
-			Enemigos.DisparoEnemy()
-			Enemigos.updateDisparosEnemy()
+		self.Tanque.NaveMostrar()
+		for x in range(ENEMYS_N1):
+			Alien = self.EscuadronAlien[x]
+			Alien.MostrarAlien()
+			Alien.DisparoEnemy()
+			Alien.updateDisparosEnemy(self.Tanque)
+
+			self.Tanque.colisiona_con(Alien )
+
+
+
+
 
 		self.Tanque.Disparo()
 		self.Tanque.updateDisparos()
-
-
-
-
-
-
 
 		# cabecera
 		self.msn.Cabecera( self.DataPuntos.nDisparos, \
@@ -89,6 +93,7 @@ class ServNiveles:
 							self.DataPuntos.Por_Municion, \
 							self.vidas)
 
+		pygame.display.flip()
 
 
 
