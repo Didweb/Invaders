@@ -71,6 +71,8 @@ class ServNiveles:
 		for ep in range(self.EnemysNivel1):
 			Enemigos = self.EnemysPeloton[ep]
 			Enemigos.update(self.Tanque)
+			Enemigos.DisparoEnemy()
+			Enemigos.updateDisparosEnemy()
 
 		self.Tanque.Disparo()
 		self.Tanque.updateDisparos()
