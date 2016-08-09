@@ -27,18 +27,19 @@ from annex.puntuaciones import (Puntos)
 
 
 class Mensajes(Puntos):
-	def __init__(self,screen,MedidaScreen):
+	def __init__(self,screen,MedidaScreen,nvidas):
 		self.screen = screen
 		self.ANCHO = MedidaScreen[0]
 		self.ALTO = MedidaScreen[1]
-		self.puntos = Puntos()
+		self.puntos = Puntos(nvidas)
 		self.imageVidas1 = pygame.image.load('./img/vida_1.png').convert_alpha()
 		self.imageVidas2 = pygame.image.load('./img/vida_2.png').convert_alpha()
 
-	def MensajeSimple(self, txt, color):
-		font = pygame.font.SysFont("arial",40)
+	def MensajeSimple(self, txt, color,tamFont,ancho,alto):
+		font = pygame.font.SysFont("arial",tamFont)
 		pantalla_texto = font.render(txt,True,color )
-		self.screen.blit(pantalla_texto,(self.ANCHO/4, self.ALTO/2))
+		self.screen.blit(pantalla_texto,(ancho,alto))
+
 
 	def Cabecera(self,nd,pa,mu,vidas):
 		font = pygame.font.SysFont("arial",12)

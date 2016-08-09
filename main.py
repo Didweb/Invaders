@@ -28,15 +28,15 @@ from annex.puntuaciones import (Puntos)
 from characters.nave import (Nave)
 from characters.enemy import (Alien_1)
 from annex.mensajes import (Mensajes)
-from annex.control import (Niveles)
+from annex.control import (Niveles,GestorAvisos)
 
 ANCHO = 600
 ALTO = 450
+N_VIDAS = 2
 
 
 
 
-jugar = True
 
 
 
@@ -46,12 +46,12 @@ def main():
 	screen = pygame.display.set_mode((ANCHO,ALTO))
 	pygame.display.set_caption('Invaders 1')
 	clock = pygame.time.Clock()
-	msn = Mensajes(screen,(ANCHO,ALTO))
-	DataPuntos = Puntos()
+	msn = Mensajes(screen,(ANCHO,ALTO),N_VIDAS)
+	DataPuntos = Puntos(N_VIDAS)
 
 
 	DataPuntos.PorcentajeMunicion()
-	vidas = DataPuntos.Vidas
+	vidas = DataPuntos.get_Vidas()
 
 	Tanque = Nave(screen,DataPuntos)
 	PosInicioNave = Tanque.PosicionInicio()
@@ -61,65 +61,162 @@ def main():
 	for x in range(0,EnemysNivel1):
 		EnemysPeloton[x] = Alien_1(screen)
 
+	GestAvisos = GestorAvisos(msn)
 
 	#screen.blit(tanque.image, tanque.rect)
 	colorBG = (0,0,0)
 
 	ControlJuego = Niveles()
 
+	jugar = True
+	avisos = False
+	menu = True
 
 
 
-	while jugar:
+	def avisosLoop(avisos):
 
-		if ControlJuego.get_Nivel() == 1:
-			EnemysNivel1 = 10
+		while avisos:
+
+			screen.fill((0,0,0))
+
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					Op_jugar = False
+					pygame.quit()
+					sys.exit()
+
+				key = pygame.key.get_pressed()
+
+				if key[K_c] :
+					jugar = True
+					avisos = False
+					jugarLoop(jugar)
+
+			GestAvisos.AvisoMuerte(DataPuntos.get_Vidas())
+
+			for x in range(0,EnemysNivel1):
+				EnemysPeloton[x] = Alien_1(screen)
+			Tanque.resetNave()
+			pygame.display.flip()
 
 
 
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				Op_jugar = False
-				pygame.quit()
-				sys.exit()
+	def menuLoop(menu):
+		txtGO = ''
+		v = ''
+		while menu:
+			screen.fill((0,0,0))
+
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					Op_jugar = False
+					pygame.quit()
+					sys.exit()
+
+				key = pygame.key.get_pressed()
+
+				if key[K_c] :
+					jugar = True
+					avisos = False
+					jugarLoop(jugar)
 
 
 
-		screen.fill((0,0,0))
 
-		Tanque.NaveMostrar()
-		Tanque.update()
-
-		for ep in range(EnemysNivel1):
-			Enemigos = EnemysPeloton[ep]
-			Enemigos.update(Tanque)
-			Enemigos.DisparoEnemy()
-			Enemigos.updateDisparosEnemy(Tanque.get_naveRect())
-			#Tanque.ColisionEnemy(Enemigos)
-
-			if Enemigos.get_alienRect().colliderect(Tanque.get_naveRect()):
-				print ("Hubo una colision con Alien [",ep,"]")
+			if DataPuntos.get_Vidas() == 0:
+				print('GAME OVER')
+				txtGO = ' --> GAME OVER <-- '
 			else:
-				print ('.......................................')
+				v = 'Tienes: '+str(DataPuntos.get_Vidas())+' vidas. '
+
+			msn.MensajeSimple(v+' '+txtGO+' [C]: Continuar',(255,0,0),20,40,60)
+
+			for x in range(0,EnemysNivel1):
+				EnemysPeloton[x] = Alien_1(screen)
+			Tanque.resetNave()
+			DataPuntos.Vidas = N_VIDAS
+			pygame.display.flip()
 
 
 
-		Tanque.Disparo()
-		Tanque.updateDisparos()
+
+	def jugarLoop(jugar):
+
+		while jugar:
+
+			if ControlJuego.get_Nivel() == 1:
+				EnemysNivel1 = 10
 
 
 
-		# cabecera
-		msn.Cabecera( DataPuntos.nDisparos, \
-						DataPuntos.PorAciertos, \
-						DataPuntos.Por_Municion, \
-						vidas)
-
-		pygame.display.flip()
-		clock.tick(15)
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					Op_jugar = False
+					pygame.quit()
+					sys.exit()
 
 
-	pygame.quit()
+
+
+			screen.fill((0,0,0))
+
+			Tanque.NaveMostrar()
+			Tanque.update()
+
+			for ep in range(EnemysNivel1):
+				Enemigos = EnemysPeloton[ep]
+				Enemigos.update(Tanque)
+				Enemigos.DisparoEnemy()
+				Enemigos.updateDisparosEnemy(Tanque.get_naveRect())
+				#Tanque.ColisionEnemy(Enemigos)
+
+				if Enemigos.get_alienRect().colliderect(Tanque.get_naveRect()):
+					DataPuntos.set_VidasMuerto()
+
+					if DataPuntos.get_Vidas()<=0:
+						if DataPuntos.get_Vidas()<0:
+							DataPuntos.Vidas = 0
+
+
+
+						menu = True
+						jugar = False
+						avisos = False
+						menuLoop(menu)
+					else:
+						jugar = False
+						avisos = True
+						menu = False
+						avisosLoop(avisos)
+
+					print ("Hubo una colision con Alien [",ep,"]")
+				else:
+					print ('.......................................')
+
+
+
+
+			Tanque.Disparo()
+			Tanque.updateDisparos()
+
+
+
+			# cabecera
+			msn.Cabecera( DataPuntos.nDisparos, \
+							DataPuntos.PorAciertos, \
+							DataPuntos.Por_Municion, \
+							DataPuntos.get_Vidas())
+
+			pygame.display.flip()
+			clock.tick(10)
+
+	menuLoop(jugar)
+
+
+
+
+
 
 
 
@@ -128,4 +225,5 @@ def main():
 
 if __name__ == '__main__':
 	main()
+	#pygame.quit()
 

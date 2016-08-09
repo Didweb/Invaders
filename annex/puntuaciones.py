@@ -24,7 +24,7 @@
 PACKS_MUNICION = 1000000
 
 class Puntos:
-	def __init__(self):
+	def __init__(self,nvidas):
 		self.nDisparos = 0
 		self.nAciertos = 0
 		self.PorAciertos = 0
@@ -32,7 +32,13 @@ class Puntos:
 		self.municion = PACKS_MUNICION
 		self.Nivel = 1
 		self.Puntuacion = 0
-		self.Vidas = 3
+		self.Vidas = nvidas
+
+	def set_VidasMuerto(self,n = 1):
+		self.Vidas = self.Vidas - 1
+
+	def get_Vidas(self):
+		return self.Vidas
 
 	def AumentaDisparos(self):
 		self.nDisparos += 1

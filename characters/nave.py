@@ -75,6 +75,12 @@ class Nave(pygame.sprite.Sprite):
 		if self.colliderect(enemy):
 			print ("Hubo una colision")
 
+	def resetNave(self):
+		self.rect.center = (ANCHO/2,LINEA_INF)
+		self.naveRect = pygame.Rect(self.rect.center[0]-RECTS_NAVE['desX'], self.rect.center[1]-RECTS_NAVE['desY'], RECTS_NAVE['anRect'], RECTS_NAVE['alRect'])
+
+
+
 	def update(self):
 		key = pygame.key.get_pressed()
 		valores = self.rect

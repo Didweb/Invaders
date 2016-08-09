@@ -33,7 +33,7 @@ VEL_ALIEN_1 = 5
 VEL_SHOT_ALIEN_1 = 10
 FRECUENCIA_DISPARO = 60 # contra más alto menos disparan ya que disparan si sale 0, ente 0 y n
 
-RECTS_LASER_E = {'anRect':3, 'alRect':13,'desX':0,'desY':0}
+RECTS_LASER_E = {'anRect':3, 'alRect':13,'desX':2,'desY':8}
 RECTS_ENEMY = {'anRect':32, 'alRect':24,'desX':-4,'desY':-4}
 
 
@@ -68,6 +68,11 @@ class Alien_1(pygame.sprite.Sprite):
 	def get_alienRect(self):
 		self.alienRect = pygame.Rect(self.x-RECTS_ENEMY['desX'], self.y-RECTS_ENEMY['desY'], RECTS_ENEMY['anRect'], RECTS_ENEMY['alRect'])
 		return self.alienRect
+
+
+
+
+
 
 	def update(self,TuNave):
 

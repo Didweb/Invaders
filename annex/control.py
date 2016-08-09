@@ -22,6 +22,8 @@
 #
 #
 
+import pygame, sys
+from pygame.locals import *
 
 class Niveles:
 	def __init__(self):
@@ -34,4 +36,20 @@ class Niveles:
 		self.Nivel = newNivel
 		return self.Nivel
 
+
+class GestorAvisos:
+	def __init__(self,msn):
+		self.msn = msn
+
+
+	def AvisoMuerte(self,vidas):
+
+		txt = 'Te han matado tienes '+str(vidas)+' vidas '
+		self.msn.MensajeSimple(txt, (255,0,0),20,60,300)
+
+
+	def FinPartida(self):
+
+		txt = 'GAME OVER'
+		self.msn.MensajeSimple(txt, (255,0,0),20,60,300)
 
