@@ -109,7 +109,7 @@ class Alien_1(pygame.sprite.Sprite):
 		self.rect = (self.x,self.y)
 
 		self.screen.blit(self.image,self.rect)
-		pygame.draw.rect(self.screen, (255,0,0), self.get_alienRect(), 3)
+		#pygame.draw.rect(self.screen, (255,0,0), self.get_alienRect(), 3)
 
 
 
@@ -151,7 +151,7 @@ class Alien_1(pygame.sprite.Sprite):
 
 
 
-	def updateDisparosEnemy(self,objeto):
+	def updateDisparosEnemy(self):
 		for dA in self.disparoActivoD:
 
 			if self.disparoActivoD[dA] == True:
@@ -161,11 +161,12 @@ class Alien_1(pygame.sprite.Sprite):
 				self.pasoDisparoD[dA] = True
 
 
-				if objeto.colliderect(unTiro.get_lasereRect()):
-					print ("Alcanzado con un laser Enemigo [",dA,"]")
+
 
 				self.screen.blit(unTiro.image, unTiro.rect)
-				pygame.draw.rect(self.screen, (255,255,255), unTiro.get_lasereRect(), 1)
+				#pygame.draw.rect(self.screen, (255,255,255), unTiro.get_lasereRect(), 1)
+
+
 
 				if unTiro.laser_y >= 450:
 					self.pasoDisparoD[dA] = False
@@ -175,6 +176,17 @@ class Alien_1(pygame.sprite.Sprite):
 					self.lasersActivosD[dA] = unTiro
 
 
+
+	def mirarAciertosAliens(self,objeto):
+		for dA in self.disparoActivoD:
+
+			if self.disparoActivoD[dA] == True:
+				unTiro = self.lasersActivosD[dA]
+				if objeto.colliderect(unTiro.get_lasereRect()):
+
+					return True
+				else:
+					return False
 
 
 class LaserEnemy(pygame.sprite.Sprite):

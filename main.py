@@ -30,8 +30,8 @@ from characters.enemy import (Alien_1)
 from annex.mensajes import (Mensajes)
 from annex.control import (Niveles,GestorAvisos)
 
-ANCHO = 600
-ALTO = 450
+ANCHO = 600 #600
+ALTO = 400 #400
 N_VIDAS = 2
 
 
@@ -134,6 +134,7 @@ def main():
 
 			for x in range(0,EnemysNivel1):
 				EnemysPeloton[x] = Alien_1(screen)
+
 			Tanque.resetNave()
 			DataPuntos.Vidas = N_VIDAS
 			pygame.display.flip()
@@ -163,23 +164,35 @@ def main():
 
 			Tanque.NaveMostrar()
 			Tanque.update()
-
+			Tanque.Disparo()
+			Tanque.updateDisparos()
+			ncambio = 0
 			for ep in range(EnemysNivel1):
 				Enemigos = EnemysPeloton[ep]
+
+
 				Enemigos.update(Tanque)
 				Enemigos.DisparoEnemy()
-				Enemigos.updateDisparosEnemy(Tanque.get_naveRect())
+				Enemigos.updateDisparosEnemy()
+
+				# Mirar si me han dado
+				MeHanDado = Enemigos.mirarAciertosAliens(Tanque.get_naveRect())
+				if MeHanDado == True:
+					DataPuntos.set_VidasMuerto()
+					menu = True
+					jugar = False
+					avisos = False
+					menuLoop(menu)
+
 				#Tanque.ColisionEnemy(Enemigos)
 
+				# Hemos Chocado con un Alien
 				if Enemigos.get_alienRect().colliderect(Tanque.get_naveRect()):
 					DataPuntos.set_VidasMuerto()
 
 					if DataPuntos.get_Vidas()<=0:
 						if DataPuntos.get_Vidas()<0:
 							DataPuntos.Vidas = 0
-
-
-
 						menu = True
 						jugar = False
 						avisos = False
@@ -190,15 +203,27 @@ def main():
 						menu = False
 						avisosLoop(avisos)
 
-					print ("Hubo una colision con Alien [",ep,"]")
-				else:
-					print ('.......................................')
+					MirarSiAcertamos = Tanque.mirarDiana(Enemigos.get_alienRect())
+					if MirarSiAcertamos == True:
+						ncambio +=1
 
 
 
 
-			Tanque.Disparo()
-			Tanque.updateDisparos()
+
+			#if ncambio > 0:
+				#EnemysNivel1 = EnemysNivel1-ncambio
+				#del EnemysPeloton[ep]
+
+			print ('ncambio = ',ncambio)
+
+
+
+
+
+
+
+
 
 
 
@@ -209,7 +234,7 @@ def main():
 							DataPuntos.get_Vidas())
 
 			pygame.display.flip()
-			clock.tick(10)
+			clock.tick(50)
 
 	menuLoop(jugar)
 
