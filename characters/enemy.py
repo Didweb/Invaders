@@ -137,7 +137,7 @@ class Alien_1(pygame.sprite.Sprite):
 						self.lasersActivosD[dA] = unTiro
 						self.disparoActivoD[dA] = True
 
-			print ('Alien : ',dA,' <--Lanzado ')
+
 
 
 	def updateDisparosEnemy(self):

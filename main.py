@@ -24,23 +24,19 @@
 
 import pygame, sys
 from pygame.locals import *
-from Niveles import (ServNiveles)
-
+from annex.puntuaciones import (Puntos)
+from characters.nave import (Nave)
+from characters.enemy import (Alien_1)
 from annex.mensajes import (Mensajes)
+from annex.control import (Niveles)
+
 ANCHO = 600
 ALTO = 450
 
 
 
-Op_menu = True
-Op_jugar = False
 
-
-def paint(player):
-	screen.blit(imagenFondo,[0,0])
-	player.update(screen)
-	pygame.display.update()
-	player.nextFrame()
+jugar = True
 
 
 
@@ -49,66 +45,74 @@ def main():
 	pygame.init()
 	screen = pygame.display.set_mode((ANCHO,ALTO))
 	pygame.display.set_caption('Invaders 1')
-	reloj = pygame.time.Clock()
+	clock = pygame.time.Clock()
 	msn = Mensajes(screen,(ANCHO,ALTO))
+	DataPuntos = Puntos()
+
+
+	DataPuntos.PorcentajeMunicion()
+	vidas = DataPuntos.Vidas
+
+	Tanque = Nave(screen,DataPuntos)
+	PosInicioNave = Tanque.PosicionInicio()
+
+	EnemysNivel1 = 10
+	EnemysPeloton = {}
+	for x in range(0,EnemysNivel1):
+		EnemysPeloton[x] = Alien_1(screen)
+
 
 	#screen.blit(tanque.image, tanque.rect)
 	colorBG = (0,0,0)
-	Nivel = 1
-	clock = pygame.time.Clock()
+
+	ControlJuego = Niveles()
 
 
 
 
+	while jugar:
+
+		if ControlJuego.get_Nivel() == 1:
+			EnemysNivel1 = 10
+		else:
+			print('Niveles no seleccionado')
 
 
-	def Menu(Op_menu,Op_jugar):
-
-		while  Op_menu:
-			screen.fill(colorBG)
-
-			msn.MensajeSimple('c para Continuar y q Salir',(255,0,0))
-			pygame.display.update()
-
-			for event in pygame.event.get():
-
-				if event.type == pygame.QUIT:
-					Op_menu = False
-					pygame.quit()
-					sys.exit()
-
-				if event.type == pygame.KEYDOWN:
-					if event.key == pygame.K_q:
-						Op_menu = False
-						pygame.quit()
-						sys.exit()
-
-					if event.key == pygame.K_c:
-						Op_menu = False
-						Op_jugar = True
-						Jugar(Op_menu,Op_jugar)
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				Op_jugar = False
+				pygame.quit()
+				sys.exit()
 
 
-	SJ = ServNiveles(Nivel,screen,(ANCHO,ALTO),msn)
-	def Jugar(Op_menu,Op_jugar):
 
-		while Op_jugar:
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					Op_jugar = False
-					pygame.quit()
-					sys.exit()
+		screen.fill((0,0,0))
 
+		Tanque.NaveMostrar()
+		Tanque.update()
 
-			if SJ.SJnivel == 1:
-				SJ.Nivel_1()
+		for ep in range(EnemysNivel1):
+			Enemigos = EnemysPeloton[ep]
+			Enemigos.update(Tanque)
+			Enemigos.DisparoEnemy()
+			Enemigos.updateDisparosEnemy()
 
-
-			pygame.display.flip()
-			clock.tick(50)
+		Tanque.Disparo()
+		Tanque.updateDisparos()
 
 
-	Menu(Op_menu,Op_jugar)
+
+		# cabecera
+		msn.Cabecera( DataPuntos.nDisparos, \
+						DataPuntos.PorAciertos, \
+						DataPuntos.Por_Municion, \
+						vidas)
+
+		pygame.display.flip()
+		clock.tick(50)
+
+
+	pygame.quit()
 
 
 
