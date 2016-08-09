@@ -29,6 +29,9 @@ LIMIT_ALTO = 60
 VELOCIDAD = 5
 VELOCIDAD_LASER = 15
 
+RECTS_NAVE = {'anRect':26, 'alRect':40,'desX':14,'desY':20}
+
+
 import pygame, sys
 from pygame.locals import *
 
@@ -42,6 +45,10 @@ class Nave(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = (ANCHO/2,LINEA_INF)
 
+
+
+
+
 		self.speed = VELOCIDAD
 		self.screen = screen
 
@@ -50,6 +57,7 @@ class Nave(pygame.sprite.Sprite):
 		self.lasersActivosD = {}
 		self.DataPuntos = DataPuntos
 
+		self.naveRect = pygame.Rect(self.rect.center[0]-RECTS_NAVE['desX'], self.rect.center[1]-RECTS_NAVE['desY'], RECTS_NAVE['anRect'], RECTS_NAVE['alRect'])
 
 
 	def PosicionInicio(self):
@@ -57,6 +65,15 @@ class Nave(pygame.sprite.Sprite):
 
 	def NaveMostrar(self):
 		self.screen.blit(self.image,self.rect)
+		pygame.draw.rect(self.screen, (255,255,255), self.get_naveRect(), 2)
+
+	def get_naveRect(self):
+		self.naveRect = pygame.Rect(self.rect.center[0]-RECTS_NAVE['desX'], self.rect.center[1]-RECTS_NAVE['desY'], RECTS_NAVE['anRect'], RECTS_NAVE['alRect'])
+		return self.naveRect
+
+	def ColisionEnemy(self,enemy):
+		if self.colliderect(enemy):
+			print ("Hubo una colision")
 
 	def update(self):
 		key = pygame.key.get_pressed()
@@ -122,7 +139,6 @@ class Nave(pygame.sprite.Sprite):
 			upx = 25
 
 		self.rect.center = (upx, upy)
-
 
 
 	def acelerador(self,key):

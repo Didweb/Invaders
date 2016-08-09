@@ -74,8 +74,7 @@ def main():
 
 		if ControlJuego.get_Nivel() == 1:
 			EnemysNivel1 = 10
-		else:
-			print('Niveles no seleccionado')
+
 
 
 		for event in pygame.event.get():
@@ -95,7 +94,15 @@ def main():
 			Enemigos = EnemysPeloton[ep]
 			Enemigos.update(Tanque)
 			Enemigos.DisparoEnemy()
-			Enemigos.updateDisparosEnemy()
+			Enemigos.updateDisparosEnemy(Tanque.get_naveRect())
+			#Tanque.ColisionEnemy(Enemigos)
+
+			if Enemigos.get_alienRect().colliderect(Tanque.get_naveRect()):
+				print ("Hubo una colision con Alien [",ep,"]")
+			else:
+				print ('.......................................')
+
+
 
 		Tanque.Disparo()
 		Tanque.updateDisparos()
@@ -109,7 +116,7 @@ def main():
 						vidas)
 
 		pygame.display.flip()
-		clock.tick(50)
+		clock.tick(15)
 
 
 	pygame.quit()

@@ -33,7 +33,8 @@ VEL_ALIEN_1 = 5
 VEL_SHOT_ALIEN_1 = 10
 FRECUENCIA_DISPARO = 60 # contra más alto menos disparan ya que disparan si sale 0, ente 0 y n
 
-
+RECTS_LASER_E = {'anRect':3, 'alRect':13,'desX':0,'desY':0}
+RECTS_ENEMY = {'anRect':32, 'alRect':24,'desX':-4,'desY':-4}
 
 
 class Alien_1(pygame.sprite.Sprite):
@@ -50,8 +51,6 @@ class Alien_1(pygame.sprite.Sprite):
 
 
 
-
-
 		self.x = random.randint(1, 600)
 		self.y = random.randint(-600, 0)
 
@@ -63,8 +62,12 @@ class Alien_1(pygame.sprite.Sprite):
 		self.pasoDisparoD = {1:False, 2:False, 3:False}
 		self.lasersActivosD = {}
 
+		self.alienRect = pygame.Rect(self.x-RECTS_ENEMY['desX'], self.y-RECTS_ENEMY['desY'], RECTS_ENEMY['anRect'], RECTS_ENEMY['alRect'])
 
 
+	def get_alienRect(self):
+		self.alienRect = pygame.Rect(self.x-RECTS_ENEMY['desX'], self.y-RECTS_ENEMY['desY'], RECTS_ENEMY['anRect'], RECTS_ENEMY['alRect'])
+		return self.alienRect
 
 	def update(self,TuNave):
 
@@ -99,7 +102,9 @@ class Alien_1(pygame.sprite.Sprite):
 		self.y = lay+1
 
 		self.rect = (self.x,self.y)
+
 		self.screen.blit(self.image,self.rect)
+		pygame.draw.rect(self.screen, (255,0,0), self.get_alienRect(), 3)
 
 
 
@@ -140,7 +145,8 @@ class Alien_1(pygame.sprite.Sprite):
 
 
 
-	def updateDisparosEnemy(self):
+
+	def updateDisparosEnemy(self,objeto):
 		for dA in self.disparoActivoD:
 
 			if self.disparoActivoD[dA] == True:
@@ -150,7 +156,11 @@ class Alien_1(pygame.sprite.Sprite):
 				self.pasoDisparoD[dA] = True
 
 
+				if objeto.colliderect(unTiro.get_lasereRect()):
+					print ("Alcanzado con un laser Enemigo [",dA,"]")
+
 				self.screen.blit(unTiro.image, unTiro.rect)
+				pygame.draw.rect(self.screen, (255,255,255), unTiro.get_lasereRect(), 1)
 
 				if unTiro.laser_y >= 450:
 					self.pasoDisparoD[dA] = False
@@ -172,11 +182,15 @@ class LaserEnemy(pygame.sprite.Sprite):
 		self.laser_x = xl+18
 		self.laser_y = yl+25
 
+		self.laserERect = pygame.Rect(self.laser_x-RECTS_LASER_E['desX'], self.laser_y-RECTS_LASER_E['desY'], RECTS_LASER_E['anRect'], RECTS_LASER_E['alRect'])
+
 	def update(self):
 		self.laser_y= self.laser_y+VEL_SHOT_ALIEN_1
-
-
 		self.rect.center = (self.laser_x, self.laser_y)
+
+	def get_lasereRect(self):
+		self.laserERect = pygame.Rect(self.laser_x-RECTS_LASER_E['desX'], self.laser_y-RECTS_LASER_E['desY'], RECTS_LASER_E['anRect'], RECTS_LASER_E['alRect'])
+		return self.laserERect
 
 
 
