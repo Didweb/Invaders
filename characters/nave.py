@@ -30,7 +30,7 @@ VELOCIDAD = 5
 VELOCIDAD_LASER = 15
 
 RECTS_LASER_N = {'anRect':3, 'alRect':13,'desX':2,'desY':8}
-RECTS_NAVE = {'anRect':26, 'alRect':40,'desX':14,'desY':20}
+RECTS_NAVE = {'anRect':20, 'alRect':30,'desX':12,'desY':10}
 
 
 import pygame, sys
@@ -126,7 +126,7 @@ class Nave(pygame.sprite.Sprite):
 			self.IMGfogonazo()
 
 		elif key[K_DOWN]:
-			upy = upy+self.acelerador(key)*2
+			upy = upy+self.acelerador(key)
 			upx = upx
 
 		elif key[K_x]:
@@ -233,10 +233,8 @@ class Nave(pygame.sprite.Sprite):
 			if self.disparoActivoD[dA] == True:
 				unTiro = self.lasersActivosD[dA]
 				if unTiro.get_lasereRect().colliderect(objeto):
-					print ("---------------------->>>>>>>>>>>>>>!!!!!!!!!!Le hemos dado [",dA,"]")
 					return True
 				else:
-					print (',** ****************************')
 					return False
 
 

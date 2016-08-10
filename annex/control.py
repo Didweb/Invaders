@@ -38,18 +38,57 @@ class Niveles:
 
 
 class GestorAvisos:
-	def __init__(self,msn):
+	def __init__(self,msn,screen):
 		self.msn = msn
+		self.screen = screen
 
 
 	def AvisoMuerte(self,vidas):
 
+		portada = pygame.image.load('./img/logo.png').convert_alpha()
+		portadaRect = portada.get_rect()
+		portadaRect.center = (285, 200)
+		self.screen.blit(portada,portadaRect)
+
 		txt = 'Te han matado tienes '+str(vidas)+' vidas '
-		self.msn.MensajeSimple(txt, (255,0,0),20,60,300)
+		self.msn.MensajeSimple(txt, (255,0,0),13,60,300)
+		pygame.display.flip()
+
+	def InicioJuego(self):
+
+		portada = pygame.image.load('./img/caratula.png').convert_alpha()
+		portadaRect = portada.get_rect()
+		portadaRect.center = (285, 200)
+		self.screen.blit(portada,portadaRect)
+
+		txt = 'Inicia tu aventura espacial y repele el ataque alieniguena. '
+		self.msn.MensajeSimple(txt, (255,0,0),16,120,300)
+		txt2 = '[C] - Continuar'
+		txt3 = '[Q] - Salir'
+		self.msn.MensajeSimple(txt2, (68,14,14),13,90,350)
+		self.msn.MensajeSimple(txt3, (68,14,14),13,90,380)
+
+		pygame.display.flip()
 
 
 	def FinPartida(self):
 
-		txt = 'GAME OVER'
-		self.msn.MensajeSimple(txt, (255,0,0),20,60,300)
+		portada = pygame.image.load('./img/caratula.png').convert_alpha()
+		portadaRect = portada.get_rect()
+		portadaRect.center = (285, 120)
+
+
+		portadaGame = pygame.image.load('./img/gameover.png').convert_alpha()
+		portadaGameRect = portadaGame.get_rect()
+		portadaGameRect.center = (295, 200)
+
+		txt = '[C] - Continuar'
+		txt2 = '[Q] - Salir'
+		self.msn.MensajeSimple(txt, (255,0,0),13,90,350)
+		self.msn.MensajeSimple(txt2, (255,0,0),13,90,380)
+
+		self.screen.blit(portada,portadaGameRect)
+		self.screen.blit(portadaGame,portadaRect)
+		pygame.display.flip()
+
 

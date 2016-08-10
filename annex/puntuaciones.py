@@ -36,6 +36,8 @@ class Puntos:
 
 	def set_VidasMuerto(self,n = 1):
 		self.Vidas = self.Vidas - 1
+		if self.Vidas<0:
+			self.Vidas  = 0
 
 	def get_Vidas(self):
 		return self.Vidas
