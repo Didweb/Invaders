@@ -35,12 +35,13 @@ class Mensajes(Puntos):
 		self.imageVidas1 = pygame.image.load('./img/vida_1.png').convert_alpha()
 		self.imageVidas2 = pygame.image.load('./img/vida_2.png').convert_alpha()
 
-	def MensajeSimple(self, txt, color):
-		font = pygame.font.SysFont("arial",40)
+	def MensajeSimple(self, txt, color,tamFont,ancho,alto):
+		font = pygame.font.SysFont("arial",tamFont)
 		pantalla_texto = font.render(txt,True,color )
-		self.screen.blit(pantalla_texto,(self.ANCHO/4, self.ALTO/2))
+		self.screen.blit(pantalla_texto,(ancho,alto))
 
-	def Cabecera(self,nd,pa,mu,vidas):
+
+	def Cabecera(self,nd,pa,mu,vidas,puntuacion,nivel):
 		font = pygame.font.SysFont("arial",12)
 		pygame.draw.rect(self.screen, (73,9,9), [0, 0, self.ANCHO, 35 ],0)
 		pa = "{:.0f}".format(pa)
@@ -64,6 +65,13 @@ class Mensajes(Puntos):
 
 
 
+		txtPuntos = 'Puntos: '+str(puntuacion)
+		pantalla_textoPuntos = font.render(txtPuntos,True,(219,175,10) )
+		self.screen.blit(pantalla_textoPuntos,(150, 4))
+
+		txtPuntos = 'Nivel: '+str(nivel)
+		pantalla_textoPuntos = font.render(txtPuntos,True,(219,175,10) )
+		self.screen.blit(pantalla_textoPuntos,(150, 20))
 
 
 		txt2 = 'Munición...'

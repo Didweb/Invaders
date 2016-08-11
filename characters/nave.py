@@ -29,6 +29,10 @@ LIMIT_ALTO = 60
 VELOCIDAD = 5
 VELOCIDAD_LASER = 15
 
+RECTS_LASER_N = {'anRect':3, 'alRect':13,'desX':2,'desY':8}
+RECTS_NAVE = {'anRect':20, 'alRect':30,'desX':12,'desY':10}
+
+
 import pygame, sys
 from pygame.locals import *
 
@@ -42,6 +46,10 @@ class Nave(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = (ANCHO/2,LINEA_INF)
 
+		#pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=512)
+		#self.laser = pygame.mixer.Sound('./fx/laserfire01.ogg')
+
+
 		self.speed = VELOCIDAD
 		self.screen = screen
 
@@ -50,11 +58,32 @@ class Nave(pygame.sprite.Sprite):
 		self.lasersActivosD = {}
 		self.DataPuntos = DataPuntos
 
+		self.naveRect = pygame.Rect(self.rect.center[0]-RECTS_NAVE['desX'], self.rect.center[1]-RECTS_NAVE['desY'], RECTS_NAVE['anRect'], RECTS_NAVE['alRect'])
+
+
 	def PosicionInicio(self):
 		self.rect.center = (ANCHO/2,LINEA_INF)
 
 	def NaveMostrar(self):
 		self.screen.blit(self.image,self.rect)
+		#pygame.draw.rect(self.screen, (255,255,255), self.get_naveRect(), 2)
+
+	def get_naveRect(self):
+		self.naveRect = pygame.Rect(self.rect.center[0]-RECTS_NAVE['desX'], self.rect.center[1]-RECTS_NAVE['desY'], RECTS_NAVE['anRect'], RECTS_NAVE['alRect'])
+		return self.naveRect
+
+
+
+	def ColisionEnemy(self,enemy):
+		if self.colliderect(enemy):
+			print ("Hubo una colision")
+
+	def resetNave(self):
+		self.rect.center = (ANCHO/2,LINEA_INF)
+		self.naveRect = pygame.Rect(self.rect.center[0]-RECTS_NAVE['desX'], self.rect.center[1]-RECTS_NAVE['desY'], RECTS_NAVE['anRect'], RECTS_NAVE['alRect'])
+
+	def get_DisparosActivos(self):
+		return self.lasersActivosD
 
 	def update(self):
 		key = pygame.key.get_pressed()
@@ -97,7 +126,7 @@ class Nave(pygame.sprite.Sprite):
 			self.IMGfogonazo()
 
 		elif key[K_DOWN]:
-			upy = upy+self.acelerador(key)*2
+			upy = upy+self.acelerador(key)
 			upx = upx
 
 		elif key[K_x]:
@@ -120,7 +149,6 @@ class Nave(pygame.sprite.Sprite):
 			upx = 25
 
 		self.rect.center = (upx, upy)
-
 
 
 	def acelerador(self,key):
@@ -177,8 +205,9 @@ class Nave(pygame.sprite.Sprite):
 
 
 
-
 	def updateDisparos(self):
+
+
 		for dA in self.disparoActivoD:
 
 			if self.disparoActivoD[dA] == True:
@@ -187,8 +216,13 @@ class Nave(pygame.sprite.Sprite):
 				unTiro.update()
 				self.pasoDisparoD[dA] = True
 
-
+				#self.laser.play()
+				self.DataPuntos.PorcentajeMunicion()
 				self.screen.blit(unTiro.image, unTiro.rect)
+				#pygame.draw.rect(self.screen, (255,255,255), unTiro.get_lasereRect(), 1)
+
+
+
 
 				if unTiro.laser_y <= 0:
 					self.pasoDisparoD[dA] = False
@@ -197,8 +231,15 @@ class Nave(pygame.sprite.Sprite):
 				else:
 					self.lasersActivosD[dA] = unTiro
 
+	def mirarDiana(self,objeto):
 
-
+		for dA in self.disparoActivoD:
+			if self.disparoActivoD[dA] == True:
+				unTiro = self.lasersActivosD[dA]
+				if unTiro.get_lasereRect().colliderect(objeto):
+					return True
+				else:
+					return False
 
 
 class Laser(pygame.sprite.Sprite):
@@ -211,6 +252,12 @@ class Laser(pygame.sprite.Sprite):
 		self.laser_x = xl+18
 		self.laser_y = yl+25
 
+		self.laserNRect = pygame.Rect( \
+							self.laser_x-RECTS_LASER_N['desX'], \
+							self.laser_y-RECTS_LASER_N['desY'], \
+							RECTS_LASER_N['anRect'], RECTS_LASER_N['alRect'])
+
+
 	def update(self):
 		self.laser_y= self.laser_y-self.speedLaser
 
@@ -218,6 +265,14 @@ class Laser(pygame.sprite.Sprite):
 			self.rect.kill()
 
 		self.rect.center = (self.laser_x, self.laser_y)
+
+
+	def get_lasereRect(self):
+		self.laserNRect = pygame.Rect( \
+						self.laser_x-RECTS_LASER_N['desX'], \
+						self.laser_y-RECTS_LASER_N['desY'], \
+						RECTS_LASER_N['anRect'], RECTS_LASER_N['alRect'])
+		return self.laserNRect
 
 
 
