@@ -35,7 +35,7 @@ ALTO = 450 #450
 
 
 
-N_ENEMIGOS_N1 = 10
+
 
 
 
@@ -52,6 +52,9 @@ class main():
 		self.DataPuntos = Puntos()
 		self.DataPuntos.PorcentajeMunicion()
 
+		self.ControlJuego = Niveles()
+
+
 		pygame.init()
 		self.screen = pygame.display.set_mode((ANCHO,ALTO))
 		pygame.display.set_caption('Invaders 1')
@@ -67,7 +70,7 @@ class main():
 		self.Tanque = Nave(self.screen,self.DataPuntos)
 
 
-		self.EnemysNivel1 = N_ENEMIGOS_N1
+		self.EnemysNivel1 = self.ControlJuego.get_EnemysN1()
 		self.EnemysPeloton = {}
 		for x in range(0,self.EnemysNivel1):
 			self.EnemysPeloton[x] = Alien_1(self.screen)
@@ -77,7 +80,7 @@ class main():
 		self.aniquilados = 0
 
 
-		self.ControlJuego = Niveles()
+
 		self.menuLoop(self.menu)
 
 
@@ -140,6 +143,8 @@ class main():
 
 				self.ControlJuego.set_Nivel(self.nextNivel)
 
+				self.EnemysNivel1 = self.ControlJuego.get_EnemysN1()
+
 
 
 
@@ -160,11 +165,11 @@ class main():
 			print('JUGANDO')
 
 			if self.ControlJuego.get_Nivel() == 1:
-				self.EnemysNivel1 = self.EnemysNivel1
+				self.EnemysNivel1 = self.ControlJuego.get_EnemysN1()
 			elif self.ControlJuego.get_Nivel() == 2:
-				self.EnemysNivel1 = 20
+				self.EnemysNivel1 = self.ControlJuego.get_EnemysN1()+1
 			else:
-				self.EnemysNivel1 = 20
+				self.EnemysNivel1 = self.ControlJuego.get_EnemysN1()+2
 
 
 			for event in pygame.event.get():
