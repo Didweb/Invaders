@@ -28,6 +28,7 @@ from pygame.locals import *
 class Niveles:
 	def __init__(self):
 		self.Nivel = 1
+		self.EnemysN1 = 2
 
 	def get_Nivel(self):
 		return self.Nivel
@@ -35,6 +36,11 @@ class Niveles:
 	def set_Nivel(self, newNivel):
 		self.Nivel = newNivel
 		return self.Nivel
+
+	def get_EnemysN1(self):
+		return self.EnemysN1
+
+
 
 
 class GestorAvisos:
