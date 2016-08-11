@@ -33,6 +33,8 @@ VEL_ALIEN_1 = 5
 VEL_SHOT_ALIEN_1 = 10
 FRECUENCIA_DISPARO = 60 # contra más alto menos disparan ya que disparan si sale 0, ente 0 y n
 
+PUNTOS_ALIEN_1 = 10
+
 RECTS_LASER_E = {'anRect':3, 'alRect':13,'desX':2,'desY':8}
 RECTS_ENEMY = {'anRect':32, 'alRect':24,'desX':-4,'desY':-4}
 
@@ -41,7 +43,7 @@ class Alien_1(pygame.sprite.Sprite):
 	def __init__(self,screen):
 		pygame.sprite.Sprite.__init__(self)
 		self.screen = screen
-		self.valorPuntos = 10
+		self.valorPuntos = PUNTOS_ALIEN_1
 		self.speed = random.randint(1, 4)
 		self.vivo = True
 
@@ -106,11 +108,36 @@ class Alien_1(pygame.sprite.Sprite):
 		self.x = lax
 		self.y = lay+1
 
-		self.rect = (self.x,self.y)
+
+
+		self.rect = self.zig_der(self.x,self.y) #self.rect = (self.x,self.y)
+
 
 		self.screen.blit(self.image,self.rect)
+
+
+
 		#pygame.draw.rect(self.screen, (255,0,0), self.get_alienRect(), 3)
 
+
+	def zig_der(self,x,y):
+
+
+
+		if y<120:
+			y=y
+		elif y >=120:
+			x = x+15
+
+		if x>=500:
+
+			x = x-10
+		elif x==15:
+			x = x+5
+
+		print ('x =  ',x,' | y = ',y)
+
+		return (x,y)
 
 
 
@@ -187,6 +214,10 @@ class Alien_1(pygame.sprite.Sprite):
 					return True
 				else:
 					return False
+
+
+
+
 
 
 class LaserEnemy(pygame.sprite.Sprite):

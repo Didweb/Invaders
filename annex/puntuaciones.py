@@ -21,18 +21,32 @@
 #  MA 02110-1301, USA.
 #
 #
-PACKS_MUNICION = 1000000
+PACKS_MUNICION = 80000
+N_VIDAS = 2
+
 
 class Puntos:
-	def __init__(self,nvidas):
+	def __init__(self):
 		self.nDisparos = 0
 		self.nAciertos = 0
 		self.PorAciertos = 0
 		self.Por_Municion = 0
+		self.PacksMunicion = PACKS_MUNICION
 		self.municion = PACKS_MUNICION
 		self.Nivel = 1
 		self.Puntuacion = 0
-		self.Vidas = nvidas
+		self.Vidas = N_VIDAS
+		self.PackVidas = N_VIDAS
+
+	def reset_vidas(self):
+		self.Vidas = N_VIDAS
+		return self.Vidas
+
+	def reset_puntos(self):
+		self.nDisparos = 0
+		self.nAciertos = 0
+		self.municion = PACKS_MUNICION
+
 
 	def set_VidasMuerto(self,n = 1):
 		self.Vidas = self.Vidas - 1
@@ -53,6 +67,12 @@ class Puntos:
 		self.PorcentajeAciertos()
 
 
+	def AumentarPuntos(self,valor):
+		self.Puntuacion += valor
+
+	def get_Puntuacion(self):
+		return self.Puntuacion
+
 	def get_NDisparos(self):
 		return self.nDisparos
 
@@ -60,7 +80,8 @@ class Puntos:
 	def get_PorAciertos(self):
 		return self.PorAciertos
 
-
+	def get_vidas(self):
+		return self.Vidas
 
 	def get_municion(self):
 		return self.municion

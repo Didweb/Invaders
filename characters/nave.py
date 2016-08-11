@@ -46,8 +46,8 @@ class Nave(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = (ANCHO/2,LINEA_INF)
 
-
-
+		pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=512)
+		self.laser = pygame.mixer.Sound('./fx/laserfire01.ogg')
 
 
 		self.speed = VELOCIDAD
@@ -206,6 +206,8 @@ class Nave(pygame.sprite.Sprite):
 
 
 	def updateDisparos(self):
+
+
 		for dA in self.disparoActivoD:
 
 			if self.disparoActivoD[dA] == True:
@@ -214,9 +216,11 @@ class Nave(pygame.sprite.Sprite):
 				unTiro.update()
 				self.pasoDisparoD[dA] = True
 
-
+				#self.laser.play()
+				self.DataPuntos.PorcentajeMunicion()
 				self.screen.blit(unTiro.image, unTiro.rect)
 				#pygame.draw.rect(self.screen, (255,255,255), unTiro.get_lasereRect(), 1)
+
 
 
 

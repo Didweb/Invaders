@@ -43,6 +43,21 @@ class GestorAvisos:
 		self.screen = screen
 
 
+	def NivelSuperado(self,puntos,nivel):
+
+
+		portada = pygame.image.load('./img/logo.png').convert_alpha()
+		portadaRect = portada.get_rect()
+		portadaRect.center = (285, 200)
+		self.screen.blit(portada,portadaRect)
+
+		txt = 'Superado el Nivel '+str(nivel)+'  '
+		self.msn.MensajeSimple(txt, (255,0,0),13,60,300)
+		txt = 'Puntos '+str(puntos)+'  '
+		self.msn.MensajeSimple(txt, (255,0,0),13,60,330)
+		pygame.display.flip()
+
+
 	def AvisoMuerte(self,vidas):
 
 		portada = pygame.image.load('./img/logo.png').convert_alpha()
