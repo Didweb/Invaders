@@ -168,6 +168,113 @@ class main():
 
 
 
+
+			"""
+			ncambio = 0
+			for ep in range(self.EnemysNivel1):
+				self.Enemigos = self.EnemysPeloton[ep]
+
+				if self.Enemigos != False:
+					self.Enemigos.update(self.Tanque)
+					self.Enemigos.DisparoEnemy()
+					self.Enemigos.updateDisparosEnemy()
+
+					# Mirar si me han dado
+					MeHanDado = self.Enemigos.mirarAciertosAliens(self.Tanque.get_naveRect())
+					if MeHanDado == True:
+
+						self.DataPuntos.set_VidasMuerto()
+
+						if self.DataPuntos.get_Vidas()<=0:
+							self.gameover = True
+							self.dado = False
+							self.menu = True
+							self.primerapartida = False
+							self.jugar = False
+							self.menuLoop(self.menu)
+
+						else:
+							self.gameover = False
+							self.dado = True
+							self.menu = True
+							self.primerapartida = False
+							self.jugar = False
+							self.menuLoop(self.menu)
+
+
+
+
+
+
+
+					#Tanque.ColisionEnemy(Enemigos)
+
+					# Hemos Chocado con un Alien
+					if self.Enemigos.get_alienRect().colliderect(self.Tanque.get_naveRect()):
+						self.DataPuntos.set_VidasMuerto()
+
+						if self.DataPuntos.get_Vidas()<=0:
+							self.gameover = True
+							self.dado = False
+							self.menu = True
+							self.primerapartida = False
+							self.jugar = False
+							self.menuLoop(self.menu)
+
+						else:
+
+							self.gameover = False
+							self.dado = True
+							self.menu = True
+							self.primerapartida = False
+							self.jugar = False
+							self.menuLoop(self.menu)
+
+
+
+
+
+					MirarSiAcertamos = self.Tanque.mirarDiana(self.Enemigos.get_alienRect())
+					if MirarSiAcertamos == True:
+						#print ('DADO',ep)
+						self.EnemysPeloton[ep] = False
+						self.DataPuntos.AumentarPuntos(self.Enemigos.valorPuntos)
+						self.nextNivel = self.ControlJuego.get_Nivel()+1
+						self.aniquilados += 1
+						self.DataPuntos.AumentaAciertos()
+						ncambio +=1
+
+
+			self.Tanque.NaveMostrar()
+			self.Tanque.update()
+			self.Tanque.Disparo()
+			self.Tanque.updateDisparos()
+
+			print (self.aniquilados,'==',self.EnemysNivel1)
+			if self.aniquilados == self.EnemysNivel1:
+				self.aniquilados = 0
+				self.superado = True
+				self.menu = True
+				self.menuLoop(self.menu)
+
+
+
+			#if ncambio > 0:
+				#EnemysNivel1 = EnemysNivel1-ncambio
+				#del EnemysPeloton[ep]
+
+
+			"""
+
+
+
+
+
+
+			print (self.DataPuntos.Por_Municion)
+
+
+
 			# cabecera
 			self.msn.Cabecera( self.DataPuntos.nDisparos, \
 							self.DataPuntos.PorAciertos, \

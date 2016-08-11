@@ -22,13 +22,21 @@
 #
 #
 
+
+from characters.nave import (Nave)
+from characters.enemy import (AlienMosca)
+
 import pygame, sys
 from pygame.locals import *
 
 class Niveles:
-	def __init__(self):
+	def __init__(self,screen, DataPuntos):
 		self.Nivel = 1
-		self.EnemysN1 = 2
+		self.n_Enemys = 0
+		self.screen = screen
+		self.DataPuntos = DataPuntos
+
+
 
 	def get_Nivel(self):
 		return self.Nivel
@@ -39,6 +47,60 @@ class Niveles:
 
 	def get_EnemysN1(self):
 		return self.EnemysN1
+
+
+	def SetsNivel(self,nivel):
+		self.n_Enemys =  {1: (1,0,0)}
+		self.Nivel = nivel
+		self.Tanque = Nave(self.screen,self.DataPuntos)
+
+		self.Pelotones = {}
+		# 3 tipos de enemigos posibles por nivel
+		for xx in range(0,2):
+
+			# Montamos los diccionarios con cada peloton de enemigos
+			for x in range(0,self.n_Enemys[self.Nivel][xx]):
+				if self.n_Enemys[self.Nivel][xx] > 0:
+
+					if self.Nivel == 1:
+						self.Pelotones[x] = {'bicho':AlienMosca(self.screen),'estado':True}
+
+
+
+
+
+
+	def MountNivel(self):
+
+
+		nPelo = len(self.Pelotones)
+		for ep in range(nPelo):
+				self.Enemigos = self.Pelotones[ep]['bicho']
+
+				if self.Pelotones[ep]['estado'] == True:
+					self.Enemigos.pintar()
+					self.Enemigos.pasitos(self.Tanque)#self.Enemigos.update(self.Tanque)
+
+					self.Enemigos.DisparoEnemy()
+
+
+				self.Enemigos.updateDisparosEnemy()
+
+
+				MirarSiAcertamos = self.Tanque.mirarDiana(self.Enemigos.get_alienRect())
+				if MirarSiAcertamos == True:
+					print ('DADO',ep)
+					self.Enemigos.muerto()
+					self.Pelotones[ep]['estado'] = False
+					self.DataPuntos.AumentarPuntos(self.Enemigos.valorPuntos)
+
+					self.DataPuntos.AumentaAciertos()
+
+
+		self.Tanque.NaveMostrar()
+		self.Tanque.update()
+		self.Tanque.Disparo()
+		self.Tanque.updateDisparos()
 
 
 

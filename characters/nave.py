@@ -224,7 +224,7 @@ class Nave(pygame.sprite.Sprite):
 
 
 
-				if unTiro.laser_y <= 0:
+				if unTiro.laser_y <= 10:
 					self.pasoDisparoD[dA] = False
 					self.disparoActivoD[dA] = False
 					unTiro.kill()

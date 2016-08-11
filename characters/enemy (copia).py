@@ -29,27 +29,192 @@ import random
 ANCHO = 600
 ALTO = 450
 
+VEL_ALIEN_1 = 5
+VEL_SHOT_ALIEN_1 = 10
+FRECUENCIA_DISPARO = 60 # contra más alto menos disparan ya que disparan si sale 0, ente 0 y n
+
+PUNTOS_ALIEN_1 = 10
+
+RECTS_LASER_E = {'anRect':3, 'alRect':13,'desX':2,'desY':8}
+RECTS_ENEMY = {'anRect':32, 'alRect':24,'desX':-4,'desY':-4}
 
 
+class Alien_1(pygame.sprite.Sprite):
+	def __init__(self,screen):
+		pygame.sprite.Sprite.__init__(self)
+		self.screen = screen
+		self.valorPuntos = PUNTOS_ALIEN_1
+		self.speed = random.randint(1, 4)
+		self.vivo = True
+
+		self.MunicionAlien = 3
+		self.tiempoDisparo = 0
+		self.lasersActivosAliens = {}
+
+
+
+		self.x = random.randint(1, 600)
+		self.y = random.randint(-600, 0)
+
+		self.image = pygame.image.load('./img/enemy_1.png').convert_alpha()
+		self.rect = self.image.get_rect()
+		self.rect.center = (self.x, self.y)
+
+		self.disparoActivoD = {1:False, 2:False, 3:False}
+		self.pasoDisparoD = {1:False, 2:False, 3:False}
+		self.lasersActivosD = {}
+
+		self.alienRect = pygame.Rect(self.x-RECTS_ENEMY['desX'], self.y-RECTS_ENEMY['desY'], RECTS_ENEMY['anRect'], RECTS_ENEMY['alRect'])
+
+
+	def get_alienRect(self):
+		self.alienRect = pygame.Rect(self.x-RECTS_ENEMY['desX'], self.y-RECTS_ENEMY['desY'], RECTS_ENEMY['anRect'], RECTS_ENEMY['alRect'])
+		return self.alienRect
+
+
+
+
+
+
+	def update(self,TuNave):
+
+		corde = self.rect
+
+		coorTuNave = TuNave.rect
+
+		lax = corde[0]
+		lay = corde[1]
+
+		if lay >= 450:
+			lax = random.randint(5, 550)
+			lay = 0
+
+		ale = random.randint(0,2)
+
+
+
+		if coorTuNave[0]>lax:
+			if ale == 0:
+				lax = lax+self.speed
+
+
+		if coorTuNave[0]<lax:
+			if ale == 0:
+				lax = lax-self.speed
+
+
+
+
+		self.x = lax
+		self.y = lay+1
+
+
+
+		self.rect = self.zig_der(self.x,self.y) #self.rect = (self.x,self.y)
+
+
+		self.screen.blit(self.image,self.rect)
+
+
+
+		#pygame.draw.rect(self.screen, (255,0,0), self.get_alienRect(), 3)
+
+
+
+
+
+
+
+
+
+	def DisparoEnemy(self):
+
+		valueXY = self.rect
+		AleDispa = random.randint(0, 60)
+		if valueXY[1]>25 and AleDispa==0:
+
+
+			for dA in self.disparoActivoD:
+
+				if self.disparoActivoD[dA]==True:
+					unTiro = self.lasersActivosD[dA]
+					unTiro.update()
+
+
+				elif dA == 1:
+					unTiro = LaserEnemy(valueXY[0],valueXY[1])
+					unTiro.update()
+					self.lasersActivosD[dA] = unTiro
+					self.disparoActivoD[dA] = True
+
+
+
+
+				elif dA > 1:
+					if self.disparoActivoD[dA-1]==True and self.pasoDisparoD[dA-1] == True:
+						unTiro = LaserEnemy(valueXY[0],valueXY[1])
+						unTiro.update()
+						self.lasersActivosD[dA] = unTiro
+						self.disparoActivoD[dA] = True
+
+
+
+
+
+	def updateDisparosEnemy(self):
+		for dA in self.disparoActivoD:
+
+			if self.disparoActivoD[dA] == True:
+
+				unTiro = self.lasersActivosD[dA]
+				unTiro.update()
+				self.pasoDisparoD[dA] = True
+
+
+
+
+				self.screen.blit(unTiro.image, unTiro.rect)
+				#pygame.draw.rect(self.screen, (255,255,255), unTiro.get_lasereRect(), 1)
+
+
+
+				if unTiro.laser_y >= 450:
+					self.pasoDisparoD[dA] = False
+					self.disparoActivoD[dA] = False
+					pass
+				else:
+					self.lasersActivosD[dA] = unTiro
+
+
+
+	def mirarAciertosAliens(self,objeto):
+		for dA in self.disparoActivoD:
+
+			if self.disparoActivoD[dA] == True:
+				unTiro = self.lasersActivosD[dA]
+				if objeto.colliderect(unTiro.get_lasereRect()):
+
+					return True
+				else:
+					return False
 
 
 class Enemys(pygame.sprite.Sprite):
 	def __init(self):
 		pygame.sprite.Sprite.__init__(self)
 
+		self.lasersActivosD = {}
+
+	def update(self):
+
+		self.rect = self.zig_der(self.x,self.y)
+		self.screen.blit(self.image,self.rect)
+
 
 
 	def pintar(self):
-		self.screen.blit(self.image,self.rect)
-
-	def muerto(self):
-		self.x = -30
-		self.y =-30
-
-	def update(self):
 		self.rect = self.image.get_rect()
 		self.rect.center = (self.x, self.y)
-
 
 
 	def get_alienRect(self):
@@ -75,14 +240,14 @@ class Enemys(pygame.sprite.Sprite):
 
 
 				elif dA == 1:
-					unTiro = LaserEnemy(self.x,self.y,self.L_RectLaserE,self.L_Settings)
+					unTiro = self.ElLaser
 					unTiro.update()
 					self.lasersActivosD[dA] = unTiro
 					self.disparoActivoD[dA] = True
 
 				elif dA > 1:
 					if self.disparoActivoD[dA-1]==True and self.pasoDisparoD[dA-1] == True:
-						unTiro = LaserEnemy(self.x,self.y,self.L_RectLaserE,self.L_Settings)
+						unTiro = self.ElLaser
 						unTiro.update()
 						self.lasersActivosD[dA] = unTiro
 						self.disparoActivoD[dA] = True
@@ -119,13 +284,11 @@ class Enemys(pygame.sprite.Sprite):
 					else:
 						return False
 
-
-
 class AlienMosca(Enemys):
 	def __init__(self,screen):
-		Enemys.__init__(self)
+		Enemys.__init__()
 
-		self.lasersActivosD = {}
+
 		self.screen = screen
 		self.RectLaserE = {'anRect':3, 'alRect':13,'desX':2,'desY':8}
 		self.RectEnemy = {'anRect':32, 'alRect':24,'desX':-4,'desY':-4}
@@ -136,9 +299,6 @@ class AlienMosca(Enemys):
 
 
 		self.image = pygame.image.load('./img/enemy_1.png').convert_alpha()
-		self.rect = self.image.get_rect()
-		self.rect.center = (self.x, self.y)
-
 
 		# Settings para n disparos
 		self.disparoActivoD = {1:False, 2:False, 3:False}
@@ -150,6 +310,8 @@ class AlienMosca(Enemys):
 		self.vivo = True
 
 
+
+
 		# Parametros del Laser
 		self.L_RectLaserE = {'anRect':3, 'alRect':13,'desX':2,'desY':8}
 		self.L_Settings = {'L_posX': 18, \
@@ -159,11 +321,34 @@ class AlienMosca(Enemys):
 							'L_freqShot': 60}
 
 
+		self.ElLaser = LaserEnemy(self.x,self.y,self.L_RectLaserE,self.L_Settings)
 
 
-	def pasitos(self,TuNave):
+	def miLaser(self):
+		self.TipoLaser =
 
 
+	def zig_der(self,x,y,TuNave):
+		corde = self.rect
+		coorTuNave = TuNave.rect
+		if y<120:
+			y=y
+		elif y >=120:
+			x = x+15
+
+		if x>=500:
+
+			x = x-10
+		elif x==15:
+			x = x+5
+
+		print ('x =  ',x,' | y = ',y)
+
+		return (x,y)
+
+
+
+	def update(self,TuNave):
 		corde = self.rect
 		coorTuNave = TuNave.rect
 
@@ -187,9 +372,8 @@ class AlienMosca(Enemys):
 		self.x = lax
 		self.y = lay+1
 
-		print ('AlienMosca x=',self.x,' | y=',self.y)
 		self.rect = self.rect = (self.x,self.y)
-
+		self.screen.blit(self.image,self.rect)
 
 
 
@@ -209,9 +393,6 @@ class LaserEnemy(pygame.sprite.Sprite):
 		self.laser_x = xl+Sets['L_posX']
 		self.laser_y = yl+Sets['L_posY']
 
-		self.Sets = Sets
-		self.Rects = Rects
-
 		self.laserERect = pygame.Rect( \
 							self.laser_x-Rects['desX'], \
 							self.laser_y-Rects['desY'], \
@@ -219,15 +400,15 @@ class LaserEnemy(pygame.sprite.Sprite):
 							Rects['alRect'])
 
 	def update(self):
-		self.laser_y= self.laser_y+self.Sets['L_velShot']
+		self.laser_y= self.laser_y+Sets['L_velShot']
 		self.rect.center = (self.laser_x, self.laser_y)
 
 	def get_lasereRect(self):
 		self.laserERect = pygame.Rect( \
-							self.laser_x-self.Rects['desX'], \
-							self.laser_y-self.Rects['desY'], \
-							self.Rects['anRect'], \
-							self.Rects['alRect'])
+							self.laser_x-Rects['desX'], \
+							self.laser_y-Rects['desY'], \
+							Rects['anRect'], \
+							Rects['alRect'])
 		return self.laserERect
 
 
