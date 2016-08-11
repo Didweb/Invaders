@@ -86,7 +86,7 @@ class main():
 			self.screen.fill((0,0,0))
 
 
-
+			print('LOOP menu')
 
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
@@ -94,17 +94,17 @@ class main():
 					pygame.quit()
 					sys.exit()
 
-				key = pygame.key.get_pressed()
+			key = pygame.key.get_pressed()
 
-				if key[K_q] :
-					self.menu = False
-					pygame.quit()
-					sys.exit()
+			if key[K_q] :
+				self.menu = False
+				pygame.quit()
+				sys.exit()
 
-				if key[K_c] :
-					self.jugar = True
-					self.menu = False
-					self.jugarLoop(self.jugar)
+			if key[K_c] :
+				self.jugar = True
+				self.menu = False
+				self.jugarLoop(self.jugar)
 
 
 
@@ -122,6 +122,7 @@ class main():
 			elif self.dado == True:
 				self.DataPuntos.CargarMunicion(self.DataPuntos.PacksMunicion)
 				self.GestAvisos.AvisoMuerte(self.DataPuntos.get_Vidas())
+				self.jugar = True
 
 			elif self.superado == True:
 				self.DataPuntos.CargarMunicion(self.DataPuntos.PacksMunicion)
@@ -152,12 +153,13 @@ class main():
 		self.menu = False
 		self.primerapartida = False
 		self.superado = False
+		self.jugar = True
 
 
 		self.ControlJuego.SetsNivel(self.ControlJuego.get_Nivel())
 
 		while jugar:
-
+			print ('LOOP --->>> Juego')
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					self.jugar = False

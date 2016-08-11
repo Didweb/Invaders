@@ -51,6 +51,7 @@ class Niveles:
 
 
 	def SetsNivel(self,nivel):
+		self.jugar = True
 		self.n_Enemys =  {1: (100,0,0)}
 		self.Nivel = nivel
 		self.Tanque = Nave(self.screen,self.DataPuntos)
