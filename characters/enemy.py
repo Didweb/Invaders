@@ -30,6 +30,14 @@ ANCHO = 600
 ALTO = 450
 
 
+def load_img(nombre, directorio):
+	ruta = os.path.join(directorio, nombre)
+	try:
+		image = pygame.image.load(ruta)
+	except:
+		print('Error! Al cargar la imagen')
+	return image.convert_alpha()
+
 
 
 
@@ -43,13 +51,30 @@ class Enemys(pygame.sprite.Sprite):
 		self.screen.blit(self.image,self.rect)
 
 	def muerto(self):
-		self.x = -30
-		self.y =-30
+		corde = self.rect
+		self.explosion(self.rect)
+		#self.x = -30
+		#self.y =-30
 
 	def update(self):
 		self.rect = self.image.get_rect()
 		self.rect.center = (self.x, self.y)
 
+
+	def explosion(self,cordeXY):
+		corde = cordeXY
+		self.explo = PlaySujeto(self.imagenExp,corde[0],corde[1])
+
+
+
+
+	def exploUpdate(self):
+		if self.explo.indicador <= 40:
+			self.explo.update(self.screen)
+			self.explo.nextFrame()
+		elif self.explo.indicador > 40:
+			self.x = -30
+			self.y = -30
 
 
 	def get_alienRect(self):
@@ -108,22 +133,38 @@ class Enemys(pygame.sprite.Sprite):
 					self.lasersActivosD[dA] = unTiro
 
 
-		def mirarAciertosAliens(self,objeto):
-			for dA in self.disparoActivoD:
+	def mirarAciertosAliens(self,objeto):
+		for dA in self.disparoActivoD:
 
-				if self.disparoActivoD[dA] == True:
-					unTiro = self.lasersActivosD[dA]
-					if objeto.colliderect(unTiro.get_lasereRect()):
+			if self.disparoActivoD[dA] == True:
+				unTiro = self.lasersActivosD[dA]
+				if objeto.colliderect(unTiro.get_lasereRect()):
 
-						return True
-					else:
-						return False
+					return True
+				else:
+					return False
 
 
 
 class AlienMosca(Enemys):
 	def __init__(self,screen):
 		Enemys.__init__(self)
+
+		self.imagenExp = [ pygame.image.load('./img/enemy_1_exp/1.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/2.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/2.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/3.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/3.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/4.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/4.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/5.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/5.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/6.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/6.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/7.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/7.png').convert_alpha(), \
+							pygame.image.load('./img/enemy_1_exp/8.png').convert_alpha() \
+							]
 
 		self.lasersActivosD = {}
 		self.screen = screen
@@ -149,7 +190,7 @@ class AlienMosca(Enemys):
 		self.speed = random.randint(1, 4)
 		self.vivo = True
 
-
+		self.vidaexplo=0
 		# Parametros del Laser
 		self.L_RectLaserE = {'anRect':3, 'alRect':13,'desX':2,'desY':8}
 		self.L_Settings = {'L_posX': 18, \
@@ -157,6 +198,7 @@ class AlienMosca(Enemys):
 							'L_img': './img/laser_alien.png', \
 							'L_velShot': 10, \
 							'L_freqShot': 60}
+
 
 
 
@@ -195,6 +237,37 @@ class AlienMosca(Enemys):
 
 		#pygame.draw.rect(self.screen, (255,0,0), self.get_alienRect(), 3)
 
+
+
+
+class sujeto(pygame.sprite.Sprite):
+
+	def __init__(self, imagenes,x,y):
+		self.imagenes = imagenes
+		self.frame = 0
+		self.indicador = 30
+		self.rect = self.imagenes[self.frame].get_rect()
+		self.rect.top = x
+		self.rect.left = y
+	def move(self, vx, vy):
+		self.rect.move_ip(vx,vy)
+	def update(self, superficie):
+		corde = self.rect
+		superficie.blit(self.imagenes[self.frame],(corde[1],corde[0]))
+	def nextFrame(self):
+		self.frame = self.indicador % len(self.imagenes)
+		self.indicador+=1
+	def setNewSprites(self, imagenes):
+		self.imagenes = imagenes
+
+
+
+class PlaySujeto(sujeto):
+
+	def __init__(self, imagenes,x,y):
+		sujeto.__init__(self, imagenes,x,y)
+	def getLife():
+		return self.life
 
 
 

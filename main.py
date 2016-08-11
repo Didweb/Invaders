@@ -55,7 +55,7 @@ class main():
 
 		pygame.init()
 		self.screen = pygame.display.set_mode((ANCHO,ALTO))
-		pygame.display.set_caption('Invaders 1')
+		pygame.display.set_caption(' .- RasInvaders -. ')
 		self.clock = pygame.time.Clock()
 		self.msn = Mensajes(self.screen,(ANCHO,ALTO))
 
@@ -134,6 +134,10 @@ class main():
 				self.EnemysNivel1 = self.ControlJuego.get_EnemysN1()
 
 
+			pygame.display.flip()
+			self.clock.tick(30)
+
+
 
 
 
@@ -164,6 +168,11 @@ class main():
 
 
 			self.ControlJuego.MountNivel()
+			estado = self.ControlJuego.EstadoActual()
+			if estado == False:
+				self.jugar = False
+				self.dado = True
+				self.menuLoop(True)
 
 
 
@@ -177,7 +186,7 @@ class main():
 							self.ControlJuego.get_Nivel())
 
 			pygame.display.flip()
-			self.clock.tick(25)
+			self.clock.tick(30)
 
 
 

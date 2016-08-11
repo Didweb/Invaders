@@ -35,6 +35,7 @@ class Niveles:
 		self.n_Enemys = 0
 		self.screen = screen
 		self.DataPuntos = DataPuntos
+		self.jugar = True
 
 
 
@@ -50,7 +51,7 @@ class Niveles:
 
 
 	def SetsNivel(self,nivel):
-		self.n_Enemys =  {1: (1,0,0)}
+		self.n_Enemys =  {1: (100,0,0)}
 		self.Nivel = nivel
 		self.Tanque = Nave(self.screen,self.DataPuntos)
 
@@ -63,7 +64,8 @@ class Niveles:
 				if self.n_Enemys[self.Nivel][xx] > 0:
 
 					if self.Nivel == 1:
-						self.Pelotones[x] = {'bicho':AlienMosca(self.screen),'estado':True}
+						alienMosca = AlienMosca(self.screen)
+						self.Pelotones[x] = {'bicho':alienMosca,'estado':True}
 
 
 
@@ -76,25 +78,72 @@ class Niveles:
 		nPelo = len(self.Pelotones)
 		for ep in range(nPelo):
 				self.Enemigos = self.Pelotones[ep]['bicho']
-
 				if self.Pelotones[ep]['estado'] == True:
 					self.Enemigos.pintar()
 					self.Enemigos.pasitos(self.Tanque)#self.Enemigos.update(self.Tanque)
-
 					self.Enemigos.DisparoEnemy()
+					print('ep en true: ',ep)
+				else:
+					print('ep en explo: ',ep)
 
+					self.Enemigos.exploUpdate()
 
 				self.Enemigos.updateDisparosEnemy()
 
-
+				# Mirar si acertamos a un enemigo
 				MirarSiAcertamos = self.Tanque.mirarDiana(self.Enemigos.get_alienRect())
 				if MirarSiAcertamos == True:
-					print ('DADO',ep)
+
 					self.Enemigos.muerto()
 					self.Pelotones[ep]['estado'] = False
 					self.DataPuntos.AumentarPuntos(self.Enemigos.valorPuntos)
 
 					self.DataPuntos.AumentaAciertos()
+
+
+				# Hemos Chocado con un Alien
+				if self.Enemigos.get_alienRect().colliderect(self.Tanque.get_naveRect()):
+					self.DataPuntos.set_VidasMuerto()
+					print('++++++++++++++++++++++++++++++++++++++++++++++++++++')
+					self.Enemigos.muerto()
+					self.Enemigos.exploUpdate()
+					if self.DataPuntos.get_Vidas()<=0:
+						self.gameover = True
+						self.dado = False
+						self.menu = True
+						self.primerapartida = False
+						self.jugar = False
+
+
+					else:
+
+						self.gameover = False
+						self.dado = True
+						self.menu = True
+						self.primerapartida = False
+						self.jugar = False
+
+				# Mirar si me han dado
+				MeHanDado = self.Enemigos.mirarAciertosAliens(self.Tanque.get_naveRect())
+				if MeHanDado == True:
+
+					self.DataPuntos.set_VidasMuerto()
+
+					if self.DataPuntos.get_Vidas()<=0:
+						self.gameover = True
+						self.dado = False
+						self.menu = True
+						self.primerapartida = False
+						self.jugar = False
+
+
+					else:
+						self.gameover = False
+						self.dado = True
+						self.menu = True
+						self.primerapartida = False
+						self.jugar = False
+
 
 
 		self.Tanque.NaveMostrar()
@@ -103,7 +152,8 @@ class Niveles:
 		self.Tanque.updateDisparos()
 
 
-
+	def EstadoActual(self):
+		return self.jugar
 
 class GestorAvisos:
 	def __init__(self,msn,screen):
