@@ -26,6 +26,8 @@ import pygame, sys, os, math
 from pygame.locals import *
 import random
 
+from .sujetos import (sujeto,PlaySujeto,load_img)
+
 ANCHO = 600
 ALTO = 450
 
@@ -235,37 +237,6 @@ class AlienMosca(Enemys):
 
 		#pygame.draw.rect(self.screen, (255,0,0), self.get_alienRect(), 3)
 
-
-
-
-class sujeto(pygame.sprite.Sprite):
-
-	def __init__(self, imagenes,x,y):
-		self.imagenes = imagenes
-		self.frame = 0
-		self.indicador = 30
-		self.rect = self.imagenes[self.frame].get_rect()
-		self.rect.top = x
-		self.rect.left = y
-	def move(self, vx, vy):
-		self.rect.move_ip(vx,vy)
-	def update(self, superficie):
-		corde = self.rect
-		superficie.blit(self.imagenes[self.frame],(corde[1],corde[0]))
-	def nextFrame(self):
-		self.frame = self.indicador % len(self.imagenes)
-		self.indicador+=1
-	def setNewSprites(self, imagenes):
-		self.imagenes = imagenes
-
-
-
-class PlaySujeto(sujeto):
-
-	def __init__(self, imagenes,x,y):
-		sujeto.__init__(self, imagenes,x,y)
-	def getLife():
-		return self.life
 
 
 

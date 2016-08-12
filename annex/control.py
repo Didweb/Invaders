@@ -25,6 +25,7 @@
 
 from characters.nave import (Nave)
 from characters.enemy import (AlienMosca)
+from characters.municion import (BolaMunicion)
 
 import pygame, sys
 from pygame.locals import *
@@ -100,6 +101,8 @@ class Niveles:
 		self.alcanzado = False
 		self.loopExploNave = 0
 
+		self.bolaM = BolaMunicion(self.screen)
+		self.bolaM.pintaBM()
 
 
 
@@ -111,6 +114,8 @@ class Niveles:
 		cuentaMuertos = 0
 
 
+		self.bolaM.updateBM()
+		self.bolaM.bola.nextFrame()
 		#For donde monta Pelotones de enemigos y control de sucesos
 
 
@@ -212,7 +217,7 @@ class GestorAvisos:
 	def NivelSuperado(self,puntos,nivel):
 
 
-		portada = pygame.image.load('./img/logo.png').convert_alpha()
+		portada = pygame.image.load('./img/logo_superado.png').convert_alpha()
 		portadaRect = portada.get_rect()
 		portadaRect.center = (285, 200)
 		self.screen.blit(portada,portadaRect)
@@ -226,7 +231,7 @@ class GestorAvisos:
 
 	def AvisoMuerte(self,vidas):
 
-		portada = pygame.image.load('./img/logo.png').convert_alpha()
+		portada = pygame.image.load('./img/logo_alcanzado.png').convert_alpha()
 		portadaRect = portada.get_rect()
 		portadaRect.center = (285, 200)
 		self.screen.blit(portada,portadaRect)
