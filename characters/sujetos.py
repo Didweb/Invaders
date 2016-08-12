@@ -37,45 +37,30 @@ def load_img(nombre, directorio):
 
 class sujeto(pygame.sprite.Sprite):
 
-	def __init__(self, screen,  imagenes, laxyy):
-		self.screen = screen
+	def __init__(self, imagenes,x,y):
 		self.imagenes = imagenes
 		self.frame = 0
 		self.indicador = 30
 		self.rect = self.imagenes[self.frame].get_rect()
-		#self.rect = laxyy
-
-	def get_rectA(self):
-		return self.rect
-
-	def set_rect(self, corde):
-		self.rect = corde
-		return self.rect
-
+		self.rect.top = x
+		self.rect.left = y
 	def move(self, vx, vy):
-		#self.rect.move_ip(vx,vy)
-		self.rect = (vx,vy)
-	def update(self):
-		self.screen.blit(self.imagenes[self.frame],self.rect)
-
+		self.rect.move_ip(vx,vy)
+	def update(self, superficie):
+		corde = self.rect
+		superficie.blit(self.imagenes[self.frame],(corde[1],corde[0]))
 	def nextFrame(self):
 		self.frame = self.indicador % len(self.imagenes)
 		self.indicador+=1
-
 	def setNewSprites(self, imagenes):
 		self.imagenes = imagenes
 
 
 
+class PlaySujeto(sujeto):
 
-
-
-
-
-class Play(sujeto):
-
-	def __init__(self, screen, imagenes,laxyy):
-		sujeto.__init__(self, screen, imagenes,laxyy)
+	def __init__(self, imagenes,x,y):
+		sujeto.__init__(self, imagenes,x,y)
 	def getLife():
 		return self.life
 

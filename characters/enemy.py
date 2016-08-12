@@ -51,10 +51,8 @@ class Enemys(pygame.sprite.Sprite):
 		self.screen.blit(self.image,self.rect)
 
 	def muerto(self):
-		corde = self.rect
 		self.explosion(self.rect)
-		#self.x = -30
-		#self.y =-30
+
 
 	def update(self):
 		self.rect = self.image.get_rect()

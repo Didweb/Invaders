@@ -84,12 +84,13 @@ class main():
 
 		if self.superado == True:
 			self.ControlJuego.set_Nivel(self.ControlJuego.get_Nivel()+1)
-			print('Superadoooooooooooooooo')
+
 		if self.primerapartida == True:
 			self.ControlJuego.set_Nivel(1)
 
 
 		while menu:
+			print('LoopMenu')
 			self.screen.fill((0,0,0))
 
 

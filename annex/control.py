@@ -52,7 +52,7 @@ class Niveles:
 
 	def SetsNivel(self,nivel):
 		self.jugar = True
-		self.n_Enemys =  {1: (1,0,0), 2:(2,0,0), 3:(3,0,0)}
+		self.n_Enemys =  {1: (100,0,0), 2:(2,0,0), 3:(3,0,0)}
 		self.Nivel = nivel
 		self.Tanque = Nave(self.screen,self.DataPuntos)
 
@@ -64,6 +64,7 @@ class Niveles:
 		print (len(self.n_Enemys),'>=',self.Nivel)
 		if len(self.n_Enemys)>self.Nivel:
 			elnivel = self.Nivel
+
 		else:
 			elnivel = len(self.n_Enemys)
 
@@ -89,6 +90,8 @@ class Niveles:
 		self.primerapartida = False
 		self.superado = False
 		self.jugar = True
+		self.alcanzado = False
+		self.loopExploNave = 0
 
 
 
@@ -101,7 +104,11 @@ class Niveles:
 		nPelo = len(self.Pelotones)
 		cuentaMuertos = 0
 
+
 		#For donde monta Pelotones de enemigos y control de sucesos
+
+
+
 		for ep in range(nPelo):
 				self.Enemigos = self.Pelotones[ep]['bicho']
 				if self.Pelotones[ep]['estado'] == True:
@@ -133,34 +140,21 @@ class Niveles:
 				if self.Enemigos.get_alienRect().colliderect(self.Tanque.get_naveRect()):
 					self.DataPuntos.set_VidasMuerto()
 					self.Enemigos.muerto()
+					self.alcanzado = True
+					self.Tanque.explosion()
 
-					self.Enemigos.exploUpdate()
-					if self.DataPuntos.get_Vidas()<=0:
-						self.gameover = True
-						self.menu = True
-						self.jugar = False
-
-					else:
-						self.dado = True
-						self.menu = True
-						self.jugar = False
 
 				# Mirar si me han dado
 				MeHanDado = self.Enemigos.mirarAciertosAliens(self.Tanque.get_naveRect())
 				if MeHanDado == True:
-
 					self.DataPuntos.set_VidasMuerto()
-
-					if self.DataPuntos.get_Vidas()<=0:
-						self.gameover = True
-						self.menu = True
-						self.jugar = False
+					self.alcanzado = True
+					self.Tanque.explosion()
 
 
-					else:
-						self.dado = True
-						self.menu = True
-						self.jugar = False
+
+
+
 
 		print (cuentaMuertos,'==',nPelo)
 		if cuentaMuertos == nPelo:
@@ -168,10 +162,28 @@ class Niveles:
 			self.jugar = False
 			self.menu = True
 
-		self.Tanque.NaveMostrar()
-		self.Tanque.update()
-		self.Tanque.Disparo()
-		self.Tanque.updateDisparos()
+		if self.alcanzado==True:
+
+			#while self.Tanque.explo.indicador<40:
+			if self.loopExploNave<40:
+				self.Tanque.exploUpdate()
+				self.loopExploNave +=1
+			else:
+				if self.DataPuntos.get_Vidas()<=0:
+					self.gameover = True
+					self.menu = True
+					self.jugar = False
+
+
+				else:
+					self.dado = True
+					self.menu = True
+					self.jugar = False
+		else:
+			self.Tanque.NaveMostrar()
+			self.Tanque.update()
+			self.Tanque.Disparo()
+			self.Tanque.updateDisparos()
 
 
 	def EstadoActual(self):
@@ -226,22 +238,22 @@ class GestorAvisos:
 		self.msn.MensajeSimple(txt, (255,0,0),16,120,300)
 		txt2 = '[C] - Continuar'
 		txt3 = '[Q] - Salir'
-		self.msn.MensajeSimple(txt2, (68,14,14),13,90,350)
-		self.msn.MensajeSimple(txt3, (68,14,14),13,90,380)
+		self.msn.MensajeSimple(txt2, (193,21,21),13,90,350)
+		self.msn.MensajeSimple(txt3, (193,21,21),13,90,380)
 
 		pygame.display.flip()
 
 
 	def FinPartida(self):
 
-		portada = pygame.image.load('./img/caratula.png').convert_alpha()
+		portada = pygame.image.load('./img/gameover.png').convert_alpha()
 		portadaRect = portada.get_rect()
 		portadaRect.center = (285, 120)
 
 
-		portadaGame = pygame.image.load('./img/gameover.png').convert_alpha()
+		portadaGame = pygame.image.load('./img/caratula.png').convert_alpha()
 		portadaGameRect = portadaGame.get_rect()
-		portadaGameRect.center = (295, 200)
+		portadaGameRect.center = (315, 270)
 
 		txt = '[C] - Continuar'
 		txt2 = '[Q] - Salir'

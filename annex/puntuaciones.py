@@ -22,7 +22,7 @@
 #
 #
 PACKS_MUNICION = 80000
-N_VIDAS = 2
+N_VIDAS = 3
 
 
 class Puntos:
