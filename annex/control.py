@@ -52,21 +52,43 @@ class Niveles:
 
 	def SetsNivel(self,nivel):
 		self.jugar = True
-		self.n_Enemys =  {1: (100,0,0)}
+		self.n_Enemys =  {1: (1,0,0), 2:(2,0,0), 3:(3,0,0)}
 		self.Nivel = nivel
 		self.Tanque = Nave(self.screen,self.DataPuntos)
 
 		self.Pelotones = {}
+
+
+		# Si no tenemos preparados los proximos niveles se montan
+		# segun ultima configuracion
+		print (len(self.n_Enemys),'>=',self.Nivel)
+		if len(self.n_Enemys)>self.Nivel:
+			elnivel = self.Nivel
+		else:
+			elnivel = len(self.n_Enemys)
+
 		# 3 tipos de enemigos posibles por nivel
 		for xx in range(0,2):
 
 			# Montamos los diccionarios con cada peloton de enemigos
-			for x in range(0,self.n_Enemys[self.Nivel][xx]):
-				if self.n_Enemys[self.Nivel][xx] > 0:
+
+			for x in range(0,self.n_Enemys[elnivel][xx]):
+				if self.n_Enemys[elnivel][xx] > 0:
 
 					if self.Nivel == 1:
 						alienMosca = AlienMosca(self.screen)
 						self.Pelotones[x] = {'bicho':alienMosca,'estado':True}
+					elif self.Nivel > 1:
+						alienMosca = AlienMosca(self.screen)
+						self.Pelotones[x] = {'bicho':alienMosca,'estado':True}
+
+
+		self.gameover = False
+		self.dado = False
+		self.menu = False
+		self.primerapartida = False
+		self.superado = False
+		self.jugar = True
 
 
 
@@ -77,15 +99,18 @@ class Niveles:
 
 
 		nPelo = len(self.Pelotones)
+		cuentaMuertos = 0
+
+		#For donde monta Pelotones de enemigos y control de sucesos
 		for ep in range(nPelo):
 				self.Enemigos = self.Pelotones[ep]['bicho']
 				if self.Pelotones[ep]['estado'] == True:
 					self.Enemigos.pintar()
-					self.Enemigos.pasitos(self.Tanque)#self.Enemigos.update(self.Tanque)
+					self.Enemigos.pasitos(self.Tanque)
 					self.Enemigos.DisparoEnemy()
-					print('ep en true: ',ep)
+
 				else:
-					print('ep en explo: ',ep)
+					cuentaMuertos += 1
 
 					self.Enemigos.exploUpdate()
 
@@ -97,31 +122,27 @@ class Niveles:
 
 					self.Enemigos.muerto()
 					self.Pelotones[ep]['estado'] = False
-					self.DataPuntos.AumentarPuntos(self.Enemigos.valorPuntos)
 
+					# Gestion de puntos
+					self.DataPuntos.AumentarPuntos(self.Enemigos.valorPuntos)
 					self.DataPuntos.AumentaAciertos()
+
 
 
 				# Hemos Chocado con un Alien
 				if self.Enemigos.get_alienRect().colliderect(self.Tanque.get_naveRect()):
 					self.DataPuntos.set_VidasMuerto()
-					print('++++++++++++++++++++++++++++++++++++++++++++++++++++')
 					self.Enemigos.muerto()
+
 					self.Enemigos.exploUpdate()
 					if self.DataPuntos.get_Vidas()<=0:
 						self.gameover = True
-						self.dado = False
 						self.menu = True
-						self.primerapartida = False
 						self.jugar = False
 
-
 					else:
-
-						self.gameover = False
 						self.dado = True
 						self.menu = True
-						self.primerapartida = False
 						self.jugar = False
 
 				# Mirar si me han dado
@@ -132,20 +153,20 @@ class Niveles:
 
 					if self.DataPuntos.get_Vidas()<=0:
 						self.gameover = True
-						self.dado = False
 						self.menu = True
-						self.primerapartida = False
 						self.jugar = False
 
 
 					else:
-						self.gameover = False
 						self.dado = True
 						self.menu = True
-						self.primerapartida = False
 						self.jugar = False
 
-
+		print (cuentaMuertos,'==',nPelo)
+		if cuentaMuertos == nPelo:
+			self.superado = True
+			self.jugar = False
+			self.menu = True
 
 		self.Tanque.NaveMostrar()
 		self.Tanque.update()
@@ -154,7 +175,13 @@ class Niveles:
 
 
 	def EstadoActual(self):
-		return self.jugar
+		estados = {'jugar':self.jugar, \
+					'gameover':self.gameover, \
+					'dado':self.dado, \
+					'menu':self.menu, \
+					'primerapartida':self.primerapartida, \
+					'superado': self.superado }
+		return estados
 
 class GestorAvisos:
 	def __init__(self,msn,screen):

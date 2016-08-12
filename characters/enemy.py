@@ -229,7 +229,7 @@ class AlienMosca(Enemys):
 		self.x = lax
 		self.y = lay+1
 
-		print ('AlienMosca x=',self.x,' | y=',self.y)
+
 		self.rect = self.rect = (self.x,self.y)
 
 

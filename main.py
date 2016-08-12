@@ -64,11 +64,11 @@ class main():
 		self.DataPuntos = Puntos()
 		self.DataPuntos.PorcentajeMunicion()
 		self.ControlJuego = Niveles(self.screen,self.DataPuntos)
-
+		self.ControlJuego.set_Nivel(1)
 
 		self.GestAvisos = GestorAvisos(self.msn,self.screen)
 
-		self.aniquilados = 0
+
 
 
 
@@ -82,11 +82,17 @@ class main():
 
 
 
+		if self.superado == True:
+			self.ControlJuego.set_Nivel(self.ControlJuego.get_Nivel()+1)
+			print('Superadoooooooooooooooo')
+		if self.primerapartida == True:
+			self.ControlJuego.set_Nivel(1)
+
+
 		while menu:
 			self.screen.fill((0,0,0))
 
 
-			print('LOOP menu')
 
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
@@ -104,6 +110,10 @@ class main():
 			if key[K_c] :
 				self.jugar = True
 				self.menu = False
+				self.gameover = False
+				self.primerapartida = False
+				self.dado = False
+				self.superado = False
 				self.jugarLoop(self.jugar)
 
 
@@ -113,11 +123,13 @@ class main():
 				self.DataPuntos.CargarMunicion(self.DataPuntos.PacksMunicion)
 				self.GestAvisos.FinPartida()
 				self.DataPuntos.Vidas = self.DataPuntos.reset_vidas()
+				self.ControlJuego.set_Nivel(1)
 
 			elif self.primerapartida == True:
 				self.DataPuntos.reset_puntos()
 				self.GestAvisos.InicioJuego()
 				self.DataPuntos.Vidas = self.DataPuntos.reset_vidas()
+				self.ControlJuego.set_Nivel(1)
 
 			elif self.dado == True:
 				self.DataPuntos.CargarMunicion(self.DataPuntos.PacksMunicion)
@@ -128,11 +140,11 @@ class main():
 				self.DataPuntos.CargarMunicion(self.DataPuntos.PacksMunicion)
 				self.GestAvisos.NivelSuperado(self.DataPuntos.get_Puntuacion(),self.ControlJuego.get_Nivel())
 				self.DataPuntos.Vidas = self.DataPuntos.get_vidas()
-				print('Superado')
 
-				self.ControlJuego.set_Nivel(self.nextNivel)
 
-				self.EnemysNivel1 = self.ControlJuego.get_EnemysN1()
+
+
+
 
 
 			pygame.display.flip()
@@ -159,7 +171,7 @@ class main():
 		self.ControlJuego.SetsNivel(self.ControlJuego.get_Nivel())
 
 		while jugar:
-			print ('LOOP --->>> Juego')
+
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					self.jugar = False
@@ -170,11 +182,19 @@ class main():
 
 
 			self.ControlJuego.MountNivel()
-			estado = self.ControlJuego.EstadoActual()
-			if estado == False:
-				self.jugar = False
-				self.dado = True
+			estat = self.ControlJuego.EstadoActual()
+
+
+			self.dado = estat['dado']
+			self.gameover = estat['gameover']
+			self.menu = estat['menu']
+			self.primerapartida = estat['primerapartida']
+			self.superado = estat['superado']
+			self.jugar = estat['jugar']
+
+			if self.jugar == False:
 				self.menuLoop(True)
+
 
 
 
@@ -188,7 +208,7 @@ class main():
 							self.ControlJuego.get_Nivel())
 
 			pygame.display.flip()
-			self.clock.tick(30)
+			self.clock.tick(35)
 
 
 
