@@ -46,8 +46,9 @@ class Nave(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = (ANCHO/2,LINEA_INF)
 
-		#pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=512)
-		#self.laser = pygame.mixer.Sound('./fx/laserfire01.ogg')
+		pygame.mixer.init()
+		
+		self.laser = pygame.mixer.load('laserfire01.ogg')
 
 
 		self.imagenExp = [ pygame.image.load('./img/enemy_1_exp/1.png').convert_alpha(), \
