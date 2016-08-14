@@ -77,7 +77,6 @@ class Nave(pygame.sprite.Sprite):
 		self.naveRect = pygame.Rect(self.rect.center[0]-RECTS_NAVE['desX'], self.rect.center[1]-RECTS_NAVE['desY'], RECTS_NAVE['anRect'], RECTS_NAVE['alRect'])
 
 	def explosion(self):
-		print ('Explota explota')
 		corde = self.rect
 		self.explo = PlaySujeto(self.imagenExp,corde[0],corde[1])
 		self.rect.center = (-1000, -100000)

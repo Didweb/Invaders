@@ -304,9 +304,11 @@ class GestorAvisos:
 		self.msn.MensajeSimple(txta, (223,11,11),20,150,300)
 
 
-		txt = '[C] - Nueva Partida'
+		txt = '[C] - Continuar'
+		txtss = '[N] - Nueva Partida'
 		txt2 = '[Q] - Salir'
-		self.msn.MensajeSimple(txt, (255,0,0),13,90,350)
+		self.msn.MensajeSimple(txt, (255,0,0),13,90,320)
+		self.msn.MensajeSimple(txtss, (255,0,0),13,90,350)
 		self.msn.MensajeSimple(txt2, (255,0,0),13,90,380)
 
 		self.screen.blit(portada,portadaGameRect)

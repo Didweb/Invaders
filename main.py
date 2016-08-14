@@ -124,14 +124,23 @@ class main():
 				self.superado = False
 				self.jugarLoop(True)
 
-
-
-			if self.gameover == True:
-				self.GestAvisos.FinPartida(self.Puntospasados,self.Nivelpasado)
+			if key[K_n] :
+				self.jugar = True
+				self.menu = False
+				self.gameover = False
+				self.primerapartida = False
+				self.dado = False
+				self.superado = False
 				self.DataPuntos.reset_Nivel()
 				self.ControlJuego.get_Nivel()
 				self.DataPuntos.reset_puntos()
 				self.DataPuntos.set_municion()
+				
+				self.jugarLoop(True)
+
+			if self.gameover == True:
+				self.GestAvisos.FinPartida(self.Puntospasados,self.Nivelpasado)
+
 				self.DataPuntos.Vidas = self.DataPuntos.reset_vidas()
 
 			elif self.primerapartida == True:
