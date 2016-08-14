@@ -36,7 +36,7 @@ RECTS_NAVE = {'anRect':20, 'alRect':30,'desX':12,'desY':10}
 import pygame, sys
 from pygame.locals import *
 
-
+from .sujetos import (sujeto,PlaySujeto,load_img)
 
 class Nave(pygame.sprite.Sprite):
 	def __init__(self,screen,DataPuntos):
@@ -50,6 +50,22 @@ class Nave(pygame.sprite.Sprite):
 		#self.laser = pygame.mixer.Sound('./fx/laserfire01.ogg')
 
 
+		self.imagenExp = [ pygame.image.load('./img/enemy_1_exp/1.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/2.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/2.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/3.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/3.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/4.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/4.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/5.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/5.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/6.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/6.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/7.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/7.png').convert_alpha(), \
+					pygame.image.load('./img/enemy_1_exp/8.png').convert_alpha() \
+					]
+
 		self.speed = VELOCIDAD
 		self.screen = screen
 
@@ -60,6 +76,21 @@ class Nave(pygame.sprite.Sprite):
 
 		self.naveRect = pygame.Rect(self.rect.center[0]-RECTS_NAVE['desX'], self.rect.center[1]-RECTS_NAVE['desY'], RECTS_NAVE['anRect'], RECTS_NAVE['alRect'])
 
+	def explosion(self):
+		print ('Explota explota')
+		corde = self.rect
+		self.explo = PlaySujeto(self.imagenExp,corde[0],corde[1])
+		self.rect.center = (-1000, -100000)
+
+
+	def exploUpdate(self):
+		if self.explo.indicador <= 40:
+			self.explo.update(self.screen)
+			self.explo.nextFrame()
+		elif self.explo.indicador > 40:
+			pass
+			#self.x = -30
+			#self.y = -30
 
 	def PosicionInicio(self):
 		self.rect.center = (ANCHO/2,LINEA_INF)
@@ -223,8 +254,7 @@ class Nave(pygame.sprite.Sprite):
 
 
 
-
-				if unTiro.laser_y <= 0:
+				if unTiro.laser_y <= 10:
 					self.pasoDisparoD[dA] = False
 					self.disparoActivoD[dA] = False
 					unTiro.kill()
