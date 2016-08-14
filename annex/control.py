@@ -260,11 +260,16 @@ class GestorAvisos:
 
 		portada = pygame.image.load('./img/logo_alcanzado.png').convert_alpha()
 		portadaRect = portada.get_rect()
-		portadaRect.center = (285, 200)
+		portadaRect.center = (285, 100)
 		self.screen.blit(portada,portadaRect)
 
+		txta = '[C] - Continuar'
+		txt2b = '[Q] - Salir'
+		self.msn.MensajeSimple(txta, (255,0,0),13,90,350)
+		self.msn.MensajeSimple(txt2b, (255,0,0),13,90,380)
+
 		txt = 'Te han matado tienes '+str(vidas)+' vidas '
-		self.msn.MensajeSimple(txt, (255,0,0),13,60,300)
+		self.msn.MensajeSimple(txt, (255,0,0),20,150,200)
 		pygame.display.flip()
 
 	def InicioJuego(self):
