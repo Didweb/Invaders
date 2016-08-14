@@ -64,9 +64,9 @@ class main():
 		self.DataPuntos = Puntos()
 		self.DataPuntos.PorcentajeMunicion()
 		self.ControlJuego = Niveles(self.screen,self.DataPuntos)
-		self.ControlJuego.set_Nivel(1)
+		self.ControlJuego.get_Nivel()
 
-		self.GestAvisos = GestorAvisos(self.msn,self.screen)
+		self.GestAvisos = GestorAvisos(self.msn,self.screen,self.DataPuntos)
 
 
 
@@ -83,11 +83,14 @@ class main():
 
 
 		if self.superado == True:
-			self.ControlJuego.set_Nivel(self.ControlJuego.get_Nivel()+1)
+			self.DataPuntos.NivelSuperado()
+			self.puntos_ante = self.DataPuntos.get_Puntuacion()
+			self.DataPuntos.calculoNivelOk()
 
 		if self.primerapartida == True:
-			self.ControlJuego.set_Nivel(1)
+			self.ControlJuego.get_Nivel()
 
+		
 
 		while menu:
 			print('LoopMenu')
@@ -120,26 +123,29 @@ class main():
 
 
 			if self.gameover == True:
+				self.GestAvisos.FinPartida(self.DataPuntos.get_Puntuacion(),self.ControlJuego.get_Nivel())
+				self.DataPuntos.reset_Nivel()
 				self.DataPuntos.reset_puntos()
-				self.DataPuntos.CargarMunicion(self.DataPuntos.PacksMunicion)
-				self.GestAvisos.FinPartida()
+				self.DataPuntos.set_municion()
 				self.DataPuntos.Vidas = self.DataPuntos.reset_vidas()
-				self.ControlJuego.set_Nivel(1)
 
 			elif self.primerapartida == True:
 				self.DataPuntos.reset_puntos()
 				self.GestAvisos.InicioJuego()
 				self.DataPuntos.Vidas = self.DataPuntos.reset_vidas()
-				self.ControlJuego.set_Nivel(1)
+				self.ControlJuego.get_Nivel()
 
 			elif self.dado == True:
-				self.DataPuntos.CargarMunicion(self.DataPuntos.PacksMunicion)
+				
 				self.GestAvisos.AvisoMuerte(self.DataPuntos.get_Vidas())
 				self.jugar = True
 
 			elif self.superado == True:
-				self.DataPuntos.CargarMunicion(self.DataPuntos.PacksMunicion)
-				self.GestAvisos.NivelSuperado(self.DataPuntos.get_Puntuacion(),self.ControlJuego.get_Nivel())
+				self.DataPuntos.NivelSuperado()
+				datosPunts = [self.puntos_ante, \
+								self.DataPuntos.get_PorAciertos(),\
+								self.DataPuntos.get_Puntuacion()]
+				self.GestAvisos.NivelSuperado(datosPunts,self.ControlJuego.get_Nivel())
 				self.DataPuntos.Vidas = self.DataPuntos.get_vidas()
 
 

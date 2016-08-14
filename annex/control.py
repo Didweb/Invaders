@@ -26,16 +26,17 @@
 from characters.nave import (Nave)
 from characters.enemy import (AlienMosca)
 from characters.municion import (BolaMunicion)
-
+import random
 import pygame, sys
 from pygame.locals import *
 
 class Niveles:
 	def __init__(self,screen, DataPuntos):
-		self.Nivel = 1
+		
 		self.n_Enemys = 0
 		self.screen = screen
 		self.DataPuntos = DataPuntos
+		self.Nivel = self.DataPuntos.Nivel
 		self.jugar = True
 
 		self.n_Enemy_auto = 1
@@ -45,9 +46,7 @@ class Niveles:
 	def get_Nivel(self):
 		return self.Nivel
 
-	def set_Nivel(self, newNivel):
-		self.Nivel = newNivel
-		return self.Nivel
+
 
 	def get_EnemysN1(self):
 		return self.EnemysN1
@@ -114,8 +113,7 @@ class Niveles:
 		cuentaMuertos = 0
 
 
-		self.bolaM.updateBM()
-		self.bolaM.bola.nextFrame()
+
 		#For donde monta Pelotones de enemigos y control de sucesos
 
 
@@ -139,12 +137,15 @@ class Niveles:
 			MirarSiAcertamos = self.Tanque.mirarDiana(self.Enemigos.get_alienRect())
 			if MirarSiAcertamos == True:
 
+				# Gestion de puntos
+				if self.Pelotones[ep]['estado'] == True:
+					self.DataPuntos.AumentarPuntos(self.Enemigos.valorPuntos)
+					self.DataPuntos.AumentaAciertos()
+
 				self.Enemigos.muerto()
 				self.Pelotones[ep]['estado'] = False
 
-				# Gestion de puntos
-				self.DataPuntos.AumentarPuntos(self.Enemigos.valorPuntos)
-				self.DataPuntos.AumentaAciertos()
+				
 
 
 
@@ -168,7 +169,7 @@ class Niveles:
 
 
 
-		print (cuentaMuertos,'==',nPelo)
+		
 		if cuentaMuertos == nPelo:
 			self.superado = True
 			self.jugar = False
@@ -176,7 +177,7 @@ class Niveles:
 
 		if self.alcanzado==True:
 
-			#while self.Tanque.explo.indicador<40:
+			
 			if self.loopExploNave<40:
 				self.Tanque.exploUpdate()
 				self.loopExploNave +=1
@@ -193,6 +194,27 @@ class Niveles:
 					self.menu = True
 					self.jugar = False
 		else:
+			
+			# Servimos municion extra
+			
+			if self.DataPuntos.get_PorMuncion()<45:
+				if self.bolaM.get_BMViva() == True:
+					self.bolaM.updateBM()
+					self.bolaM.bola.nextFrame()
+					# Recoger municion
+					AlcanzarMunicion = self.bolaM.AlcanzaMunicion(self.Tanque.get_naveRect())
+					
+					if AlcanzarMunicion == True:
+						self.DataPuntos.set_municion()
+						self.bolaM.newPosicionBM()
+						self.bolaM.set_BMViva(False)
+						
+				elif self.bolaM.get_BMViva() == False:
+					ran = random.randint(0, 50)
+					if ran == 1:
+						self.bolaM.set_BMViva(True)
+						
+			
 			self.Tanque.NaveMostrar()
 			self.Tanque.update()
 			self.Tanque.Disparo()
@@ -209,23 +231,28 @@ class Niveles:
 		return estados
 
 class GestorAvisos:
-	def __init__(self,msn,screen):
+	def __init__(self,msn,screen,DataPunts):
 		self.msn = msn
 		self.screen = screen
-
+		self.DataPuntos = DataPunts
 
 	def NivelSuperado(self,puntos,nivel):
 
 
 		portada = pygame.image.load('./img/logo_superado.png').convert_alpha()
 		portadaRect = portada.get_rect()
-		portadaRect.center = (285, 200)
+		portadaRect.center = (285, 100)
 		self.screen.blit(portada,portadaRect)
 
-		txt = 'Superado el Nivel '+str(nivel)+'  '
-		self.msn.MensajeSimple(txt, (255,0,0),13,60,300)
-		txt = 'Puntos '+str(puntos)+'  '
-		self.msn.MensajeSimple(txt, (255,0,0),13,60,330)
+		txta = '[C] - Continuar'
+		txt2b = '[Q] - Salir'
+		self.msn.MensajeSimple(txta, (255,0,0),13,90,350)
+		self.msn.MensajeSimple(txt2b, (255,0,0),13,90,380)
+		nivel = nivel-1
+		txt = 'Nivel '+str(nivel)+'  SUPERADO!! '
+		self.msn.MensajeSimple(txt, (255,0,0),20,200,200)
+		txt = str(puntos[0])+' puntos  + '+str(round(puntos[1]))+'% Efect. =  '+str(puntos[2])+' puntos'
+		self.msn.MensajeSimple(txt, (85,162,237),20,120,260)
 		pygame.display.flip()
 
 
@@ -257,7 +284,7 @@ class GestorAvisos:
 		pygame.display.flip()
 
 
-	def FinPartida(self):
+	def FinPartida(self,puntos,nivel):
 
 		portada = pygame.image.load('./img/gameover.png').convert_alpha()
 		portadaRect = portada.get_rect()
@@ -268,13 +295,19 @@ class GestorAvisos:
 		portadaGameRect = portadaGame.get_rect()
 		portadaGameRect.center = (315, 270)
 
-		txt = '[C] - Continuar'
+		txta = str(puntos)+' puntos  | Nivel '+str(nivel)
+		self.msn.MensajeSimple(txta, (223,11,11),20,150,300)
+
+
+		txt = '[C] - Nueva Partida'
 		txt2 = '[Q] - Salir'
 		self.msn.MensajeSimple(txt, (255,0,0),13,90,350)
 		self.msn.MensajeSimple(txt2, (255,0,0),13,90,380)
 
 		self.screen.blit(portada,portadaGameRect)
 		self.screen.blit(portadaGame,portadaRect)
+		
+
 		pygame.display.flip()
 
 
