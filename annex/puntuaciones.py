@@ -22,7 +22,7 @@
 #
 #
 PACKS_MUNICION = 80000
-N_VIDAS = 1
+N_VIDAS = 3
 
 
 class Puntos:
@@ -42,6 +42,9 @@ class Puntos:
 		self.Vidas = N_VIDAS
 		return self.Vidas
 
+	def get_NivelP(self):
+		return self.Nivel
+
 	def reset_Nivel(self):
 		self.Nivel = 1
 		return self.Nivel
@@ -49,13 +52,14 @@ class Puntos:
 	def reset_puntos(self):
 		self.nDisparos = 0
 		self.nAciertos = 0
+		self.Puntuacion = 0
 		self.municion = PACKS_MUNICION
 
 	def NivelSuperado(self):
 		self.Nivel = self.Nivel+1
 		return self.Nivel
 
-	def set_VidasMuerto(self,n = 1):
+	def set_VidasMuerto(self):
 		self.Vidas = self.Vidas - 1
 		if self.Vidas<0:
 			self.Vidas  = 0
