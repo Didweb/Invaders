@@ -46,11 +46,6 @@ class Nave(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = (ANCHO/2,LINEA_INF)
 
-		pygame.mixer.init()
-		
-		self.laser = pygame.mixer.load('laserfire01.ogg')
-
-
 		self.imagenExp = [ pygame.image.load('./img/enemy_1_exp/1.png').convert_alpha(), \
 					pygame.image.load('./img/enemy_1_exp/2.png').convert_alpha(), \
 					pygame.image.load('./img/enemy_1_exp/2.png').convert_alpha(), \
