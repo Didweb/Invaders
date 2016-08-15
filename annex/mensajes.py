@@ -41,7 +41,7 @@ class Mensajes(Puntos):
 		self.screen.blit(pantalla_texto,(ancho,alto))
 
 
-	def Cabecera(self,nd,pa,mu,vidas,puntuacion,nivel):
+	def Cabecera(self,nd,pa,mu,vidas,puntuacion,nivel,cuentaLosEnemys):
 		font = pygame.font.SysFont("arial",12)
 		pygame.draw.rect(self.screen, (73,9,9), [0, 0, self.ANCHO, 35 ],0)
 		pa = "{:.0f}".format(pa)
@@ -62,9 +62,14 @@ class Mensajes(Puntos):
 			self.screen.blit(self.imageVidas1,self.rect)
 
 
-
-
-
+		# Cuenta Enemys
+		imagenEnemys = pygame.image.load('./img/enemy_1_mini.png').convert_alpha()
+		self.screen.blit(imagenEnemys,(250,4))
+		txtene = str(cuentaLosEnemys)
+		pantalla_textoenemis = font.render(txtene,True,(219,175,10) )
+		self.screen.blit(pantalla_textoenemis,(275, 5))
+		
+		
 		txtPuntos = 'Puntos: '+str(puntuacion)
 		pantalla_textoPuntos = font.render(txtPuntos,True,(219,175,10) )
 		self.screen.blit(pantalla_textoPuntos,(150, 4))

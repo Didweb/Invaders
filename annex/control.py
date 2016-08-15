@@ -219,6 +219,14 @@ class Niveles:
 			self.Tanque.updateDisparos()
 			
 
+	def cuentaEnemys(self):
+		cuenta = 0
+		for ep in range(self.nPelo):
+			if self.Pelotones[ep]['estado']==True:
+				cuenta += 1
+				
+		return cuenta
+				
 
 
 	def EstadoActual(self):

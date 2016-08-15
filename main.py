@@ -223,15 +223,16 @@ class main():
 
 
 
-
+			cuentaLosEnemys = self.ControlJuego.cuentaEnemys()
 
 			# cabecera
 			self.msn.Cabecera( self.DataPuntos.nDisparos, \
 							self.DataPuntos.PorAciertos, \
 							self.DataPuntos.Por_Municion, \
 							self.DataPuntos.get_Vidas(), \
-							self.DataPuntos.get_Puntuacion(),
-							self.DataPuntos.get_NivelP())
+							self.DataPuntos.get_Puntuacion(), \
+							self.DataPuntos.get_NivelP(), \
+							cuentaLosEnemys)
 
 			pygame.display.flip()
 			self.clock.tick(40)
